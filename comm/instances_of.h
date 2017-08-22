@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../variadic.h"
+#include "variadic.h"
 
 namespace comm
 {

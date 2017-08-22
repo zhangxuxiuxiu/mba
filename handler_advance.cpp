@@ -1,63 +1,73 @@
 #include "handler_advance.h"
 
-namespace comm
+namespace mba 
 {
-/*	void ComposableHandler::doStart()
+	//######## ComposableHandler ###########//
+	void ComposableHandler::Init()
 	{
-		for( auto& i2h : m_index2HandlerMapper)
-			i2h.second.Start();
+		compose();	
+		for( auto& h : m_setHandlers) { h->Init(); }
 	}
 
-	void ComposableHandler::Stop()
+	void ComposableHandler::Start()
 	{
-		for( auto& i2h : m_index2HandlerMapper)
-			i2h.second.Stop();
-	}
-
-	void SyncHandler::Start()
-	{
-		ComposableHandler::Start();
-	}
-
-	void SyncHandler::Stop()
-	{
-		ComposableHandler::Stop();
-	}
-*/
-	void SyncHandler::Handle( sp<Messag> const& msg ) 
-	{
-		m_index2HandlerMapper[msg->Type()].Handle( msg);
+//		compose();
+		run();
 	}
 
 
-	void AsyncHandler::Start()
+	ComposableHandler& ComposableHandler::Register( comm::sp<ComposableHandler> const& handler  )
 	{
-		Register<CloseMessage>([]( CloseMessage const& msg){ throw std::exception("close async Handler");});
-
-		auto runner = [&]()
+//		handler->Init();
+		std::cout << "size of msgs=" << handler->m_setMessages.size() << '\n';
+		for( auto& ti : handler->m_setMessages ) 
 		{
-			try
-			{
-				while(true)
-				{
-					auto msg = m_qMsgQueue.Take();
-					m_index2HandlerMapper[msg->Type()].Handle( msg);
-				}
-			}
-			catch( std::exception ex) // CloseMessage will throw exception to break the loop
-			{ }
+			doRegister( ti, handler );
 		}
-		m_spAsyncer = std::make_shared<std::thread>(runner); 
+
+		return *this;
 	}
 
-/*	void AsyncHandler::Stop()
+	ComposableHandler& ComposableHandler::doRegister( std::type_index const& ti, comm::sp< Handler > const& handler) 
 	{
-		GetSender().Send<CloseMessage>();
-		ComposableHandler::Stop();
+		m_setMessages.emplace(ti);
+		// ensure a unique handler won't be inserted more than once
+		m_setHandlers.emplace(handler);
+		std::cout << "handler=" << typeid(handler).name() << " got registered\n";
+		m_index2HandlersMapper.emplace( ti, handler ); 
+		
+		return *this;
 	}
-*/
-	void AsyncHandler::Handle( sp<Message> const& msg ) 
+
+	void ComposableHandler::doHandle(const comm::sp<Message>& msg)
 	{
-		m_qMsgQueue.Push( msg);	
+		auto range = m_index2HandlersMapper.equal_range(msg->Type());
+		// process this msg by all registered handlers
+		for(auto it = range.first; it != range.second ; ++it )
+		{
+			std::cout << "processing " << typeid(msg.get()).name() << " in " << __PRETTY_FUNCTION__  << '\n';
+			it->second->Handle( msg);
+		}
 	}
+
+	// ####### SystemHandler ###### //
+	void SystemHandler::run()
+	{
+		m_loopRunner( [this](comm::sp<Message> const& msg)
+				{ 
+					std::cout << "processing " << typeid(msg.get()).name() << " in " << __PRETTY_FUNCTION__  << '\n';
+					this->doHandle(msg);
+				} );
+	}
+
+	//####### AsyncHandler ########//
+	void AsyncHandler::run()
+	{
+		m_asyncer = std::async( std::launch::async, std::ref(m_loopRunner),  
+					[this] (comm::sp<Message> const& msg)
+					{ 
+						this->doHandle(msg); 
+					} ); 
+	}
+
 } // end of comm

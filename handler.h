@@ -1,36 +1,36 @@
 #pragma once
 
-#include "comm.h"
+#include "comm/comm.h"
 #include "msg.h"
 #include <typeindex>
 #include <exception>
 #include <functional>
 #include <string>
 
-namespace comm
+namespace mba 
 {
 
-	class Handler
+	class Handler : public  comm::Noncopyable
 	{
 		public:
-			virtual void Handle(const sp<Message>& msg ) = 0;
-			virtual void Start(){};  // empty default implementation means subclass can ignore this
-			virtual void Stop(){};
+			// do preparation for handling message
+			virtual void Init() = 0;
+			virtual void Start() = 0;
+			virtual void Handle(const comm::sp<Message>& msg ) = 0;
 			virtual ~Handler() {};
 	};
 	
-	template< class Msg  > 
-	class WrappedHandler : public Handler
+	template< class Msg > 
+	class WrappedHandler final : public Handler
 	{
 		public:
 			template< class... Args >
 			WrappedHandler( Args&&... args) : m_f( std::forward<Args>(args)... ){}
 			~WrappedHandler(){}
-			// non-copyable
-			WrappedHandler( WrappedHandler& handler ) = delete;
-			WrappedHandler& operator=( const WrappedHandler& handler ) = delete;
 	
-			virtual void Handle(const sp<Message>& msg ) override final
+			virtual void Init() override {};
+			virtual void Start() override {}
+			virtual void Handle(const comm::sp<Message>& msg ) override final
 			{
 				auto _msg = dynamic_cast<  WrappedMessage<Msg>*  >( msg.get() );		
 				if( _msg != nullptr )
@@ -46,6 +46,12 @@ namespace comm
 		private:
 			std::function< void(const Msg& ) > m_f;
 	};
+
+	template<class Msg, class... Args>
+	comm::sp<Handler> make_handler( Args&&... args)
+	{
+		return std::make_shared< WrappedHandler<Msg>>( std::forward<Args>(args)... );	
+	}
 
 } // end of comm
 

@@ -1,0 +1,210 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ATMHardware	tut/simple_atm.cpp	/^		ATMHardware( Sender msgCenter) : SubHandler( msgCenter){} $/;"	f	class:final
+AsyncHandler	handler_advance.h	/^			AsyncHandler( Sender msgCenter) : ComposableHandler(msgCenter){} $/;"	f	class:mba::AsyncHandler
+AsyncHandler	handler_advance.h	/^	class AsyncHandler : public ComposableHandler, public LoopRunner$/;"	c	namespace:mba
+Bank	tut/simple_atm.cpp	/^		Bank( Sender msgCenter) : AsyncHandler( msgCenter){}$/;"	f	class:final
+CompntOne	csp_test.cpp	/^		CompntOne( sender msg_center) : DispatchableHandler( msg_center){}; $/;"	f	class:CompntOne
+CompntOne	csp_test.cpp	/^class CompntOne : public DispatchableHandler$/;"	c	file:
+CompntTwo	csp_test.cpp	/^		CompntTwo( sender msg_center) : DispatchableHandler( msg_center){}; $/;"	f	class:CompntTwo
+CompntTwo	csp_test.cpp	/^class CompntTwo: public DispatchableHandler $/;"	c	file:
+ComposableHandler	handler_advance.h	/^			ComposableHandler( Sender msgCenter) : m_msgCenter( msgCenter),$/;"	f	class:mba::ComposableHandler
+ComposableHandler	handler_advance.h	/^	class ComposableHandler : public Handler, public comm::Noncopyable$/;"	c	namespace:mba
+Credential	tut/simple_atm.cpp	/^struct Credential{};$/;"	s	file:
+GetHandler	deprecated/handler_registery.cpp	/^	sp<Handler> HandlerRegistery::GetHandler( std::type_index const& ti)$/;"	f	class:comm::HandlerRegistery
+GetSender	handler_advance.h	/^			inline Sender GetSender() { return Sender( &m_qMsgQueue); }$/;"	f	class:mba::LoopRunner
+HandlableTypes	deprecated/handler_registery.h	/^			inline std::unordered_set<std::type_index> const HandlableTypes() const { return m_setHandlableTypes; }$/;"	f	class:comm::HandlerRegistery::std
+Handler	handler.h	/^	class Handler$/;"	c	namespace:mba
+HandlerRegistery	deprecated/handler_registery.h	/^	class HandlerRegistery$/;"	c	namespace:comm
+InstancesHook	comm/instances_of.h	/^	class InstancesHook$/;"	c	namespace:comm
+LoopRunner	handler_advance.h	/^	class LoopRunner$/;"	c	namespace:mba
+Message	msg.h	/^	class Message$/;"	c	namespace:mba
+Noncopyable	comm/noncopyable.h	/^			Noncopyable(){}$/;"	f	class:comm::Noncopyable
+Noncopyable	comm/noncopyable.h	/^	class Noncopyable$/;"	c	namespace:comm
+NullDispatcher	deprecated/_csp.h	/^class NullDispatcher$/;"	c	namespace:csp
+Push	comm/sync_queue_inl.h	/^	void SyncQueue<Tp>::Push( const Tp& ele)$/;"	f	class:comm::SyncQueue
+Register	deprecated/handler_registery_inl.h	/^	HandlerRegistery& HandlerRegistery::Register( Args&&... args)$/;"	f	class:comm::HandlerRegistery
+Register	deprecated/handler_registery_inl.h	/^	HandlerRegistery& HandlerRegistery::Register( sp<ComposableHandler> const& handler  )$/;"	f	class:comm::HandlerRegistery
+Register	handler_advance.cpp	/^	ComposableHandler& ComposableHandler::Register( comm::sp<ComposableHandler> const& handler  )$/;"	f	class:mba::ComposableHandler
+Register	handler_advance.h	/^			ComposableHandler& Register( Args&&... args)$/;"	f	class:mba::ComposableHandler
+Send	sender.h	/^			void Send( Args&&... args )$/;"	f	class:mba::Sender
+Send	sender.h	/^			void Send( comm::sp<Message> const& msg )$/;"	f	class:mba::Sender
+Sender	sender.h	/^			Sender( comm::SyncQueue< comm::sp<Message> >* p_queue) : m_pMsgQueue( p_queue){}$/;"	f	class:mba::Sender
+Sender	sender.h	/^			Sender() : m_pMsgQueue( nullptr) {};$/;"	f	class:mba::Sender
+Sender	sender.h	/^	class Sender$/;"	c	namespace:mba
+Start	handler_advance.cpp	/^	void ComposableHandler::Start()$/;"	f	class:mba::ComposableHandler
+Start	join_test.cpp	/^		void Start()$/;"	f	class:SubModule
+StartOnDeposit	tut/simple_atm.cpp	/^struct StartOnDeposit{};$/;"	s	file:
+Stop	handler_advance.h	/^	struct Stop{}; $/;"	s	namespace:mba
+SubHandler	handler_advance.h	/^			SubHandler( Sender msgCenter ) : SyncHandler( msgCenter ){} 	$/;"	f	class:mba::SubHandler
+SubHandler	handler_advance.h	/^	class SubHandler : public SyncHandler$/;"	c	namespace:mba
+SubModule	join_test.cpp	/^class SubModule$/;"	c	file:
+SuccessOnDeposit	tut/simple_atm.cpp	/^struct SuccessOnDeposit{};$/;"	s	file:
+SyncHandler	handler_advance.h	/^			SyncHandler( Sender msgCenter ) : ComposableHandler( msgCenter){ }$/;"	f	class:mba::SyncHandler
+SyncHandler	handler_advance.h	/^	class SyncHandler : public ComposableHandler$/;"	c	namespace:mba
+SyncQueue	comm/sync_queue.h	/^	class SyncQueue  $/;"	c	namespace:comm
+SystemHandler	handler_advance.h	/^			SystemHandler() : SyncHandler( Sender() )$/;"	f	class:mba::SystemHandler
+SystemHandler	handler_advance.h	/^	class SystemHandler	: public SyncHandler, public LoopRunner$/;"	c	namespace:mba
+Take	comm/sync_queue_inl.h	/^	Tp SyncQueue<Tp>::Take()$/;"	f	class:comm::SyncQueue
+TemplateDispatcher	deprecated/_csp.h	/^	TemplateDispatcher( TemplateDispatcher&& other ): q( other.q ), prev( other.prev ), $/;"	f	class:csp::TemplateDispatcher
+TemplateDispatcher	deprecated/_csp.h	/^	TemplateDispatcher( queue* q_, PreviousDispatcher* prev_, Func&& f_): q(q_), prev(prev_), $/;"	f	class:csp::TemplateDispatcher
+TemplateDispatcher	deprecated/_csp.h	/^class TemplateDispatcher$/;"	c	namespace:csp
+TypeIndexesHook	comm/type_indexes_of.h	/^	class TypeIndexesHook$/;"	c	namespace:comm
+WrappedHandler	handler.h	/^			WrappedHandler( Args&&... args) : m_f( std::forward<Args>(args)... ){}$/;"	f	class:mba::final
+WrappedMessage	msg.h	/^			WrappedMessage( Args&&... args) : m_msg( std::forward<Args>(args)... ) {}$/;"	f	class:mba::WrappedMessage
+WrappedMessage	msg.h	/^	class WrappedMessage : public Message$/;"	c	namespace:mba
+base	comm/instances_of_test.cpp	/^struct base{};$/;"	s	file:
+c	deprecated/_csp.h	/^	std::condition_variable c;$/;"	m	class:csp::queue
+chained	deprecated/_csp.h	/^		bool chained;$/;"	m	class:csp::NullDispatcher
+chained	deprecated/_csp.h	/^	bool chained; $/;"	m	class:csp::TemplateDispatcher
+close_function	deprecated/_csp.h	/^class close_function$/;"	c	namespace:csp
+close_queue	deprecated/_csp.h	/^class close_queue {};$/;"	c	namespace:csp
+comm	comm/comm.h	/^namespace comm$/;"	n
+comm	comm/instances_of.h	/^namespace comm$/;"	n
+comm	comm/noncopyable.h	/^namespace comm $/;"	n
+comm	comm/sync_queue.h	/^namespace comm$/;"	n
+comm	comm/sync_queue_inl.h	/^namespace comm$/;"	n
+comm	comm/type_indexes_of.h	/^namespace comm$/;"	n
+comm	comm/variadic.h	/^namespace comm$/;"	n
+comm	deprecated/dispatcher.cpp	/^namespace comm$/;"	n	file:
+comm	deprecated/dispatcher.h	/^namespace comm$/;"	n
+comm	deprecated/dispatcher_inl.h	/^namespace comm$/;"	n
+comm	deprecated/handler_registery.cpp	/^namespace comm$/;"	n	file:
+comm	deprecated/handler_registery.h	/^namespace comm$/;"	n
+comm	deprecated/handler_registery_inl.h	/^namespace comm$/;"	n
+contents	deprecated/_csp.h	/^	Msg contents;$/;"	m	struct:csp::wrapped_message
+csp	deprecated/_csp.h	/^namespace csp$/;"	n
+derived1	comm/instances_of_test.cpp	/^struct derived1 : public base{};$/;"	s	file:
+derived2	comm/instances_of_test.cpp	/^struct derived2 : public base{};$/;"	s	file:
+detail	comm/variadic.h	/^	namespace detail$/;"	n	namespace:comm
+dispatch	deprecated/_csp.h	/^		bool dispatch( std::shared_ptr< message_base > const& msg){ return false; }$/;"	f	class:csp::NullDispatcher
+dispatch	deprecated/_csp.h	/^	bool dispatch( std::shared_ptr<message_base> const& msg )$/;"	f	class:csp::TemplateDispatcher
+dispatcher	deprecated/dispatcher.h	/^			dispatcher( uint32_t delayInMs = 1000 ) : m_iBreakInMs( delayInMs ){}$/;"	f	class:comm::dispatcher
+dispatcher	deprecated/dispatcher.h	/^	class dispatcher : public handler_base, HandlerRegistery$/;"	c	namespace:comm
+doHandle	handler_advance.cpp	/^	void ComposableHandler::doHandle(const comm::sp<Message>& msg)$/;"	f	class:mba::ComposableHandler
+f	deprecated/_csp.h	/^	Func f;$/;"	m	class:csp::TemplateDispatcher
+final	deprecated/dispatcher.h	/^			virtual void handle( const sp< message_base >& msg ) override final;$/;"	m	class:comm::dispatcher
+final	handler.h	/^	class WrappedHandler final : public Handler, comm::Noncopyable$/;"	c	namespace:mba
+final	handler_advance.h	/^			virtual void Start() override final;$/;"	m	class:mba::ComposableHandler
+final	handler_advance.h	/^			virtual void run() override final;$/;"	m	class:mba::AsyncHandler
+final	tut/simple_atm.cpp	/^class ATMHardware final: public SubHandler$/;"	c	file:
+final	tut/simple_atm.cpp	/^class Bank final : public AsyncHandler$/;"	c	file:
+final	tut/simple_atm.cpp	/^class SimpleATM final: public SystemHandler$/;"	c	file:
+get_sender	deprecated/dispatcher.h	/^			inline sender get_sender() { return sender( &m_qMsgQueue); }$/;"	f	class:comm::dispatcher
+handle	csp_test.cpp	/^		void handle( const msg_v4& _msg)$/;"	f	class:v4Op
+handle	deprecated/_csp.h	/^	TemplateDispatcher< TemplateDispatcher, OtherMsg, OtherFunc> handle( OtherFunc&& of )  \/\/ 4 可以链接其他处理器$/;"	f	class:csp::TemplateDispatcher
+handle	deprecated/dispatcher.cpp	/^	void dispatcher::handle( const sp< message_base >& msg ) $/;"	f	class:comm::dispatcher
+handleWith	deprecated/dispatcher_inl.h	/^	dispatcher& dispatcher::handleWith( args&&... _args)\/\/template_handler< message >&& handler )$/;"	f	class:comm::dispatcher
+handleWith	deprecated/dispatcher_inl.h	/^	dispatcher& dispatcher::handleWith( sp<handler_base> const& sub_handler  )$/;"	f	class:comm::dispatcher
+instances_of	comm/instances_of.h	/^	std::vector< sp<BaseType>> instances_of( Args&&... args)$/;"	f	namespace:comm
+m	deprecated/_csp.h	/^	std::mutex m;$/;"	m	class:csp::queue
+m_asyncer	handler_advance.h	/^			std::future<void>	m_asyncer;$/;"	m	class:mba::AsyncHandler
+m_bStopFlag	deprecated/dispatcher.h	/^			std::atomic_bool	m_bStopFlag;$/;"	m	class:comm::dispatcher
+m_cond	comm/sync_queue.h	/^			std::condition_variable		m_cond;$/;"	m	class:comm::SyncQueue
+m_f	handler.h	/^			std::function< void(const Msg& ) > m_f;$/;"	m	class:mba::final
+m_iBreakInMs	deprecated/dispatcher.h	/^			uint32_t	m_iBreakInMs;$/;"	m	class:comm::dispatcher
+m_index2HandlerMapper	deprecated/handler_registery.h	/^			std::unordered_map< std::type_index, sp< Handler > >	m_index2HandlerMapper;$/;"	m	class:comm::HandlerRegistery
+m_index2HandlersMapper	handler_advance.h	/^			std::unordered_multimap< std::type_index, comm::sp< Handler > >	m_index2HandlersMapper;$/;"	m	class:mba::ComposableHandler
+m_msg	msg.h	/^			Msg m_msg;$/;"	m	class:mba::WrappedMessage
+m_msgCenter	handler_advance.h	/^			Sender														m_msgCenter;$/;"	m	class:mba::ComposableHandler
+m_mutex	comm/sync_queue.h	/^			std::mutex					m_mutex;$/;"	m	class:comm::SyncQueue
+m_pMsgQueue	sender.h	/^			comm::SyncQueue< comm::sp<Message> >* m_pMsgQueue;$/;"	m	class:mba::Sender
+m_qMsgQueue	deprecated/dispatcher.h	/^			sync_queue< sp<message_base> >	m_qMsgQueue;$/;"	m	class:comm::dispatcher
+m_qMsgQueue	handler_advance.h	/^			comm::SyncQueue< comm::sp<Message> >		m_qMsgQueue;$/;"	m	class:mba::LoopRunner
+m_queue	comm/sync_queue.h	/^			std::queue< Tp >			m_queue;  $/;"	m	class:comm::SyncQueue
+m_setHandlableTypes	deprecated/handler_registery.h	/^			std::unordered_set<std::type_index> m_setHandlableTypes;$/;"	m	class:comm::HandlerRegistery
+m_setHandlers	handler_advance.h	/^			std::unordered_set<comm::sp< Handler> >						m_setHandlers;$/;"	m	class:mba::ComposableHandler
+m_setMessages	handler_advance.h	/^			std::unordered_set<std::type_index>							m_setMessages;$/;"	m	class:mba::ComposableHandler
+m_thread	join_test.cpp	/^		std::shared_ptr<std::thread>	m_thread;$/;"	m	class:SubModule	file:
+main	comm/comm_test.cpp	/^int main()$/;"	f
+main	comm/instances_of_test.cpp	/^int main(int argc, char* argv[])$/;"	f
+main	csp_test.cpp	/^int main( int argc, char* argv[])$/;"	f
+main	join_test.cpp	/^int main()$/;"	f
+main	tut/int_test.cpp	/^int main()$/;"	f
+main	tut/simple_atm.cpp	/^int main(int argc, char* argv[])$/;"	f
+mba	handler.h	/^namespace mba $/;"	n
+mba	handler_advance.cpp	/^namespace mba $/;"	n	file:
+mba	handler_advance.h	/^namespace mba $/;"	n
+mba	msg.h	/^namespace mba $/;"	n
+mba	sender.h	/^namespace mba $/;"	n
+message_base	deprecated/_csp.h	/^struct message_base  \/\/ 队列项的基础类$/;"	s	namespace:csp
+msg	msg.h	/^			WrappedMessage  operator=( const WrappedMessage& msg ) = delete;$/;"	m	class:mba::WrappedMessage
+msg	msg.h	/^			WrappedMessage( WrappedMessage& msg) = delete;$/;"	m	class:mba::WrappedMessage
+msg_v1	csp_test.cpp	/^struct msg_v1{};$/;"	s	file:
+msg_v2	csp_test.cpp	/^	msg_v2( int v){}$/;"	f	struct:msg_v2
+msg_v2	csp_test.cpp	/^struct msg_v2$/;"	s	file:
+msg_v3	csp_test.cpp	/^	msg_v3( int v){}$/;"	f	struct:msg_v3
+msg_v3	csp_test.cpp	/^struct msg_v3$/;"	s	file:
+msg_v4	csp_test.cpp	/^struct msg_v4{};$/;"	s	file:
+msg_v5	csp_test.cpp	/^struct msg_v5{};$/;"	s	file:
+msg_v6	csp_test.cpp	/^struct msg_v6{};$/;"	s	file:
+noexcept	deprecated/_csp.h	/^	~TemplateDispatcher() noexcept(false)  \/\/ 5 这个析构函数也是noexcept(false)的$/;"	f	class:csp::TemplateDispatcher
+operator ()	comm/instances_of.h	/^			void operator()(std::vector< sp<BaseType>>& result, Args&&... args )$/;"	f	class:comm::InstancesHook
+operator ()	comm/type_indexes_of.h	/^			void operator()( std::vector< std::type_index>&	vecTypeIndexes )$/;"	f	class:comm::TypeIndexesHook
+operator ()	comm/variadic.h	/^				void operator()( Args&&... args)$/;"	f	class:comm::detail::variadic_np
+operator ()	csp_test.cpp	/^		void operator() ( const msg_v2& _msg)$/;"	f	class:v2Op
+operator ()	deprecated/_csp.h	/^		void operator() ( const close_queue& msg)$/;"	f	class:csp::close_function
+operator ()	handler_advance.h	/^			void operator()( Args&&... args)\/\/std::function<void(comm::sp<Message>)> const& processor)\/\/  )$/;"	f	class:mba::LoopRunner
+operator sender	deprecated/_csp.h	/^	operator sender()  \/\/ 允许将类中队列隐式转化为一个sender队列$/;"	f	class:csp::receiver
+override	deprecated/dispatcher.h	/^			virtual void start() override;$/;"	m	class:comm::dispatcher
+override	handler_advance.h	/^			virtual void Handle(const comm::sp<Message>& msg ) override = 0;$/;"	m	class:mba::ComposableHandler
+override	handler_advance.h	/^			virtual void compose() override = 0;$/;"	m	class:mba::AsyncHandler
+override	handler_advance.h	/^			virtual void compose() override = 0;$/;"	m	class:mba::SubHandler
+override	handler_advance.h	/^			virtual void compose() override = 0;$/;"	m	class:mba::SyncHandler
+override	handler_advance.h	/^			virtual void compose() override = 0;$/;"	m	class:mba::SystemHandler
+override	handler_advance.h	/^			virtual void run() override = 0; $/;"	m	class:mba::SyncHandler
+prev	deprecated/_csp.h	/^	PreviousDispatcher* prev;$/;"	m	class:csp::TemplateDispatcher
+push	deprecated/_csp.h	/^	void push(T const& msg)$/;"	f	class:csp::queue
+q	deprecated/_csp.h	/^	queue q;  \/\/ 接受者拥有对应队列$/;"	m	class:csp::receiver
+q	deprecated/_csp.h	/^	queue* q;$/;"	m	class:csp::TemplateDispatcher
+q	deprecated/_csp.h	/^	queue*q;  \/\/ sender是一个队列指针的包装类$/;"	m	class:csp::sender
+q	deprecated/_csp.h	/^	std::queue<std::shared_ptr<message_base> > q;  \/\/ 实际存储指向message_base类指针的队列$/;"	m	class:csp::queue
+queue	deprecated/_csp.h	/^class queue  \/\/ 我们的队列$/;"	c	namespace:csp
+receiver	deprecated/_csp.h	/^class receiver$/;"	c	namespace:csp
+registerHandler	deprecated/dispatcher.cpp	/^	void dispatcher::registerHandler( std::type_index const& ti, sp< handler_base > const& handler) $/;"	f	class:comm::dispatcher
+registerHandler	deprecated/handler_registery.cpp	/^	void HandlerRegistery::registerHandler( std::type_index const& ti, sp< Handler > const& handler) $/;"	f	class:comm::HandlerRegistery
+registerSingle	handler_advance.cpp	/^	ComposableHandler& ComposableHandler::registerSingle( std::type_index const& ti, comm::sp< Handler > const& handler) $/;"	f	class:mba::ComposableHandler
+run	handler_advance.cpp	/^	void AsyncHandler::run()$/;"	f	class:mba::AsyncHandler
+send	deprecated/_csp.h	/^	void send(Message const& msg)$/;"	f	class:csp::sender
+sender	deprecated/_csp.h	/^	explicit sender(queue* q_): q( q_ ) {}  \/\/ 从指向队列的指针进行构造$/;"	f	class:csp::sender
+sender	deprecated/_csp.h	/^	sender():  q( nullptr ) {} \/\/ sender无队列(默认构造函数)$/;"	f	class:csp::sender
+sender	deprecated/_csp.h	/^class sender$/;"	c	namespace:csp
+start	deprecated/dispatcher.cpp	/^	void dispatcher::start()$/;"	f	class:comm::dispatcher
+stopLoop	handler_advance.h	/^			void stopLoop()$/;"	f	class:mba::LoopRunner
+type_indexes_of	comm/type_indexes_of.h	/^	std::vector< std::type_index> type_indexes_of()$/;"	f	namespace:comm
+v2Op	csp_test.cpp	/^class v2Op$/;"	c	file:
+v3_func	csp_test.cpp	/^void v3_func( const msg_v3& _msg)$/;"	f
+v4Op	csp_test.cpp	/^class v4Op$/;"	c	file:
+value	comm/variadic.h	/^			->typename std::enable_if< (sizeof...(Args) > 0) && !std::is_same<bool,typename std::result_of< Callable(Tp) >::type >::value, void>::type$/;"	m	class:comm::detail::std::is_same
+value	comm/variadic.h	/^			->typename std::enable_if< (sizeof...(Args) > 0) && std::is_same<bool,typename std::result_of< Callable(Tp) >::type >::value, bool>::type$/;"	m	class:comm::detail::std::is_same
+variadic_np	comm/variadic.h	/^		class variadic_np : public variadic_np<Hook, Types...>$/;"	c	namespace:comm::detail
+variadic_np	comm/variadic.h	/^		class variadic_np<Hook, T>$/;"	c	namespace:comm::detail
+wait	deprecated/_csp.h	/^	dispatcher wait()  \/\/ 等待对队列进行调度$/;"	f	class:csp::receiver
+wait_and_dispatch	deprecated/_csp.h	/^	void wait_and_dispatch()$/;"	f	class:csp::TemplateDispatcher
+wait_and_pop	deprecated/_csp.h	/^	std::shared_ptr<message_base> wait_and_pop()$/;"	f	class:csp::queue
+wrapped_message	deprecated/_csp.h	/^	explicit wrapped_message(Msg const& contents_): contents(contents_) {}$/;"	f	struct:csp::wrapped_message
+wrapped_message	deprecated/_csp.h	/^struct wrapped_message: message_base$/;"	s	namespace:csp
+~ATMHardware	tut/simple_atm.cpp	/^		~ATMHardware(){}$/;"	f	class:final
+~AsyncHandler	handler_advance.h	/^			virtual ~AsyncHandler()$/;"	f	class:mba::AsyncHandler
+~Bank	tut/simple_atm.cpp	/^		~Bank() {\/\/ std::cout << "bank destructed\\n"; $/;"	f	class:final
+~CompntOne	csp_test.cpp	/^		~CompntOne(){}$/;"	f	class:CompntOne
+~CompntTwo	csp_test.cpp	/^		~CompntTwo(){}$/;"	f	class:CompntTwo
+~ComposableHandler	handler_advance.h	/^			virtual ~ComposableHandler(){$/;"	f	class:mba::ComposableHandler
+~Handler	handler.h	/^			virtual ~Handler() {};$/;"	f	class:mba::Handler
+~HandlerRegistery	deprecated/handler_registery.h	/^			virtual ~HandlerRegistery() {}$/;"	f	class:comm::HandlerRegistery
+~LoopRunner	handler_advance.h	/^			virtual ~LoopRunner(){} \/\/ make it inheritable$/;"	f	class:mba::LoopRunner
+~Message	msg.h	/^			virtual ~Message(){}$/;"	f	class:mba::Message
+~SimpleATM	tut/simple_atm.cpp	/^		~SimpleATM(){};$/;"	f	class:final
+~SubHandler	handler_advance.h	/^			virtual ~SubHandler(){};	$/;"	f	class:mba::SubHandler
+~SubModule	join_test.cpp	/^		~SubModule()$/;"	f	class:SubModule
+~SyncHandler	handler_advance.h	/^			virtual ~SyncHandler(){}	$/;"	f	class:mba::SyncHandler
+~SystemHandler	handler_advance.h	/^			virtual ~SystemHandler(){}	$/;"	f	class:mba::SystemHandler
+~WrappedHandler	handler.h	/^			~WrappedHandler(){}$/;"	f	class:mba::final
+~WrappedMessage	msg.h	/^			~WrappedMessage(){}	$/;"	f	class:mba::WrappedMessage
+~dispatcher	deprecated/dispatcher.h	/^			~dispatcher(){}$/;"	f	class:comm::dispatcher
+~message_base	deprecated/_csp.h	/^	virtual ~message_base(){}$/;"	f	struct:csp::message_base
+~wrapped_message	deprecated/_csp.h	/^	~wrapped_message(){}$/;"	f	struct:csp::wrapped_message

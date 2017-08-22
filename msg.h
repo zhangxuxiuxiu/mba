@@ -2,10 +2,12 @@
 
 #include <typeinfo>
 
-namespace comm
-{
+#include "comm/comm.h" 
+#include "comm/noncopyable.h"
 
-	class Message
+namespace mba 
+{
+	class Message : public comm::Noncopyable
 	{
 		public:
 			virtual ~Message(){}
@@ -13,7 +15,7 @@ namespace comm
 	};
 	
 	template< class Msg > 
-	class WrappedMessage : public Message
+	class WrappedMessage final: public Message
 	{
 		public:
 			template< class... Args>
@@ -22,24 +24,22 @@ namespace comm
 	
 			virtual const std::type_info& Type() const override final
 			{
-				return typeid( Msg );
+				return typeid(Msg);
 			}
 	
-	//		const msg& get() 
-	//		{ 
-	//			return m_msg; 
-	//		}
-			operator Msg() const 
+			operator Msg const& () noexcept 
 			{
 				return m_msg;
 			}
 	
-			//non-copyable
-			WrappedMessage( WrappedMessage& msg) = delete;
-			WrappedMessage  operator=( const WrappedMessage& msg ) = delete;
-	
 		private:
 			Msg m_msg;
 	};
+
+	template<class Msg, class... Args>
+	std::shared_ptr<Message> make_msg( Args&&... args)
+	{
+		return std::make_shared<WrappedMessage<Msg>>( std::forward<Args>(args)... );	
+	}
 
 } // end of comm

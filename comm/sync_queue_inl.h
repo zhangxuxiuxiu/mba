@@ -16,7 +16,7 @@ namespace comm
 	{
 		std::unique_lock<std::mutex> ul(m_mutex);
 		m_cond.wait( ul, [&](){ return !m_queue.empty(); } );
-		auto& res=q.front();
+		auto& res=m_queue.front();
 		m_queue.pop();
 		return res;
 	}

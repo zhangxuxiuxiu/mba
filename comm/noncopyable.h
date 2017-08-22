@@ -1,18 +1,16 @@
-#ifndef MUDUO_OTHER_NONCOPYABLE_H
-#define MUDUO_OTHER_NONCOPYABLE_H
+#pragma once
 
-namespace muduo
+namespace comm 
 {
+	class Noncopyable
+	{
+		protected:
+			Noncopyable(){}
 
-class noncopyable
-{
- protected:
-  noncopyable(){}
- private:
-  noncopyable(const noncopyable&);
-  noncopyable& operator =(const noncopyable&);
-};
+		private:
+			Noncopyable(const Noncopyable&);
+			Noncopyable& operator =(const Noncopyable&);
+	};
 
 }
 
-#endif // MUDUO_OTHER_COPYABLE_H
