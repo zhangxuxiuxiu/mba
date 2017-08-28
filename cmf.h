@@ -5,7 +5,6 @@
 #include <atomic>
 
 #include "regional_office.h"
-//#include "deliverer.h"
 
 namespace cmf{
 	/*
@@ -13,7 +12,7 @@ namespace cmf{
 	 * */
 	class LocalOffice: public RegionalOffice{
 		public:	
-			LocalOffice(Poster poster) : RegionalOffice(poster){}
+			LocalOffice() : RegionalOffice(){}
 			virtual ~LocalOffice(){}	
 
 			inline virtual void operator()(const comm::sp<Message>& msg ) override final{
@@ -21,23 +20,21 @@ namespace cmf{
 			}	
 	};
 
-	struct CmfClose{}; // message to stop proxy offices
+	struct CmfStop{}; // message to stop proxy offices
 	/*
 	 * a proxy to dispatch messages to other offices or recipients
 	 * */
 	class ProxyOffice : public RegionalOffice{
 		public:	
-			ProxyOffice( Poster poster, int sleepMs ) : RegionalOffice(poster), 
+			explicit ProxyOffice(int sleepMs ) : RegionalOffice(), 
 				m_is_open(true), m_sleep_ms(sleepMs){
 					// bind the closer to CmfClose message
-					bind<CmfClose>([this](CmfClose const&){this->close();});	
+					bind<CmfStop>([this](CmfStop const&){this->close();});	
 				}
 			virtual ~ProxyOffice(){};
 			inline virtual void operator() (comm::sp<Message> const& msg) override final{
 				m_queue_messages.Push(msg);
 			}
-			// start dispatching
-			virtual void Open() = 0;
 
 		protected:
 			inline void dispatch(){
@@ -52,6 +49,14 @@ namespace cmf{
 				}
 			}
 
+			// for ProxyOffice bind, the should set parameter's poster
+			inline virtual RegionalOffice& bindOffice( comm::sp<RegionalOffice> const& subOffice) override{
+				RegionalOffice::bindOffice(subOffice);	
+				// setting this so that sub-office could post message to current office through m_poster
+				subOffice->m_poster = &m_queue_messages;
+				return *this; 
+			}
+
 		protected:
 			comm::SyncQueue< comm::sp<Message> >	m_queue_messages;
 
@@ -61,15 +66,17 @@ namespace cmf{
 			std::atomic<bool>						m_is_open;
 			const int								m_sleep_ms;
 	};
+
 	/*
 	 * dispatch messages to async thread
 	 * */
 	class AsyncOffice : public ProxyOffice{
 		public:	
-			AsyncOffice(Poster poster, int sleepMs = 100) : ProxyOffice(poster, sleepMs){}
+			explicit AsyncOffice(int sleepMs = 100) : ProxyOffice(sleepMs){}
 			virtual ~AsyncOffice(){ m_asyncer.get(); }	
 
-			virtual void Open() override final{
+		private:
+			virtual void roll() override final{
 				m_asyncer = std::async( std::launch::async, [this](){
 					this->dispatch();	
 				}); 
@@ -85,11 +92,11 @@ namespace cmf{
 	class HeadOffice : public ProxyOffice{
 		public:	
 			// HeadOffice does not need a poster to send message to other recipients
-			HeadOffice(int sleepMs = 100) : ProxyOffice(Poster(), sleepMs){}
+			explicit HeadOffice(int sleepMs = 100) : ProxyOffice(sleepMs){}
 			virtual ~HeadOffice(){}	
 	
 			inline Poster GetPoster() { return Poster( &this->m_queue_messages); }
-			inline virtual void Open() override final{
+			inline void Run() {
 				dispatch();	
 			}
 	};

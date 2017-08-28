@@ -1,8 +1,8 @@
 #pragma once
 
 #include "variadic.h"
-#include<typeindex>
-#include<vector>
+#include <typeindex>
+#include <vector>
 
 namespace comm
 {

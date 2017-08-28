@@ -1,6 +1,7 @@
 #pragma once
 
 #include <typeinfo>
+#include <string>
 
 #include "comm/comm.h" 
 #include "comm/noncopyable.h"
@@ -11,7 +12,8 @@ namespace cmf
 	{
 		public:
 			virtual ~Message(){}
-			virtual const std::type_info& Type() const = 0;
+			virtual std::type_info const& Type() const = 0;
+			virtual std::string const& Info() const = 0;
 	};
 	
 	namespace{  // WrappedMessage should be invisible to outside
@@ -23,8 +25,11 @@ namespace cmf
 				WrappedMessage( Args&&... args) : m_raw_msg( std::forward<Args>(args)... ) {}
 				~WrappedMessage(){}	
 		
-				virtual const std::type_info& Type() const override final {
+				inline virtual std::type_info const& Type() const override final {
 					return typeid(MsgType);
+				}
+				inline virtual std::string const& Info() const override final {
+					return s_info;
 				}
 		
 				// explicitly support implicit MsgType conversion
@@ -34,7 +39,12 @@ namespace cmf
 		
 			private:
 				MsgType m_raw_msg;
+
+				static std::string const s_info;
 		};
+
+		template<class MsgType>
+		std::string const WrappedMessage<MsgType>::s_info = typeid(MsgType).name();
 	}
 
 	template<class MsgType, class... Args>

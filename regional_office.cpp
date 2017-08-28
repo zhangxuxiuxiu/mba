@@ -1,34 +1,33 @@
 #include "regional_office.h"
-#include "cmf.h"
+
+#include <stdexcept>
 
 namespace cmf{
 	
-	RegionalOffice& RegionalOffice::bind(comm::sp< Recipient> const& recipient) 
+	RegionalOffice& RegionalOffice::bindOffice(comm::sp<RegionalOffice> const& office) 
 	{
-		for( auto& ti : recipient->MessageTypes() ) {
+		for( auto& ti : office->m_set_messages){
 			m_set_messages.emplace(ti);
-	//		std::cout << "Recipient=" << typeid(recipient).name() << " got registered\n";
-			m_map_index2recipients.emplace( ti, recipient); 
+			m_map_index2recipients.emplace( ti, office); 
 		}
-		// AsyncOffice should be started before receiving messages
-		auto async_office_ptr = dynamic_cast<AsyncOffice*>(recipient.get());	
-		if( async_office_ptr != nullptr){ async_office_ptr->Open(); }
+		// actually only AsyncOffice really do sth here
+		office->roll(); 
 
 		return *this;
 	}
 
-/*	RegionalOffice& RegionalOffice::bind(comm::sp< AsyncOffice> const& asyncOffice) 
-	{
-		bind( static_cast<comm::sp<Recipient>>(asyncOffice) );
-		(*asyncOffice)(); // start asyncOffice
-	}
-*/
 	void RegionalOffice::doDeliver(const comm::sp<Message>& msg)
 	{
 		auto range = m_map_index2recipients.equal_range(msg->Type());
+		if( range.first == range.second){ 
+			if( not m_poster ){ // only HeadOffice's m_poster is false
+				throw std::logic_error( msg->Info() + " does not bind to any recipients" );
+			} else{ // deliver the msg to its parent to process 
+				m_poster(msg); 
+			}
+		}
 		// deliver the message to the corresponding recipients 
 		for(auto it = range.first; it != range.second ; ++it ){
-//			std::cout << "processing " << typeid(msg.get()).name() << " in " << __PRETTY_FUNCTION__  << '\n';
 			(*it->second)(msg);
 		}
 	}

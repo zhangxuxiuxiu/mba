@@ -17,13 +17,6 @@ namespace cmf
 			virtual void operator()(const comm::sp<Message>& msg ) = 0;
 			virtual ~Recipient() {};
 
-			inline std::unordered_set<std::type_index> const& MessageTypes(){
-				return m_set_messages;
-			}
-
-		protected:
-			// all types which the whole Recipients here in this registry can handle
-			std::unordered_set<std::type_index>		m_set_messages;
 	};
 	
 	namespace { // WrappedRecipient should be invisible to the outside
@@ -32,8 +25,8 @@ namespace cmf
 		{
 			public:
 				template< class... Args >
-				WrappedRecipient( Args&&... args) : Recipient(), m_functor( std::forward<Args>(args)... ) {
-					m_set_messages.insert(typeid(MsgType)); 
+				WrappedRecipient( Args&&... args) : Recipient(), m_functor( std::bind(std::forward<Args>(args)..., std::placeholders::_1) ) {
+	//				m_set_messages.insert(typeid(MsgType)); 
 				}
 				~WrappedRecipient(){}
 		
@@ -43,7 +36,7 @@ namespace cmf
 					if( wrapped_msg != nullptr ){
 						m_functor( *wrapped_msg ); 
 					} else {
-						throw std::invalid_argument( std::string("wrong Recipient with type=") + typeid( *this ).name() + " is mapped to message type=" + typeid(MsgType).name() );
+						throw std::invalid_argument( std::string("wrong Recipient with type=") + typeid( *this ).name() + " is mapped to message type=" + msg->Info() );
 					}
 				}
 		

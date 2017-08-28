@@ -10,10 +10,15 @@ namespace cmf
 	class Poster
 	{
 		public:
-			Poster( comm::SyncQueue< comm::sp<Message> >* p_queue = nullptr) : m_pMsgQueue( p_queue){}
+			//support implicit conversion
+			Poster( comm::SyncQueue< comm::sp<Message> >* p_queue = nullptr) : m_queue_messages_ptr( p_queue){}
 
 			Poster( Poster const&) = default;
-			Poster& operator=( Poster const&) = default;
+			Poster( Poster &&) = default;
+			Poster& operator=( Poster const&) = default; 
+			Poster& operator=( Poster &&) = default; 
+
+			inline operator bool() const { return nullptr != m_queue_messages_ptr;}
 
 			template< class MsgType, class... Args >
 			inline void emplace( Args&&... args ){
@@ -21,15 +26,15 @@ namespace cmf
 			}
 
 			void operator()( comm::sp<Message> const& msg ){
-				if( m_pMsgQueue) {
-					m_pMsgQueue->Push( msg );
+				if( m_queue_messages_ptr != nullptr) {
+					m_queue_messages_ptr->Push( msg );
 				} else {
 					throw std::logic_error(" messege queue in the Poster is null");  
 				}
 			}
 
 		private:
-			comm::SyncQueue< comm::sp<Message> >* m_pMsgQueue;
+			comm::SyncQueue< comm::sp<Message> >* m_queue_messages_ptr;
 	};
 
 } // end of comm

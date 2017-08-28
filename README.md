@@ -28,16 +28,43 @@ there are four kinds of recipients:
 		1> a recipient can process one or multiple event types;
 		2> a event type could be processed by multiple recipients;
 		3> a specific event gets dispatched to its recipient in constant time;
-		4> all events can be sent to HeadOffice then dispatched to their
-			corresponding recipients or sent to the Office where the event produces;
+		4> all events can be sent to HeadOffice then dispatched to their corresponding 
+	recipients or sent to the Office where the event produces;
+		5> if a message can't be processed by current office, it will be delivered to 
+	its parent until the HeadOffice can't process, then an exception will throw;
 		### syntactic constraints ###
-		5> a LocalOffic or AsyncOffice can be initialized with a event type list
-		and only process event types specified in its declared type list, or compilation 
-		error occurs;
+		6> a LocalOffic or AsyncOffice can be initialized with a message type list
+	and only process event types specified in its declared type list, or compilation 
+	error occurs;
+		7> if any message specified in message type list is not bound, compilation error 
+	occures in the Office constructor
 
 future works:
 	1> provide a performance-improved and interface-friendly sync-queue/concurrent-queue;
 	2> support for timed message which could decay to a normal message with a default 
-		now-timestamp( this feature needs a concurrent-priority-queue or a sorted vector);
-	3> support thread pool in AsyncOffice 
-	4> support future in ProxyOffices
+	now-timestamp( this feature needs a concurrent-priority-queue or a sorted vector);
+	3> support thread pool in AsyncOffice; 
+	4> support future in ProxyOffices;
+
+thoughts:
+	1>	should regional office set its sub-office's poster's source as itself automatically through binding?  
+			if yes, the cmf would form a layered message flow, sub-office can only post messages to its
+		parent office until no parent can process it;
+			if no, all regional offices can only post messages to HeadOffice through constructing themself  
+		with HeadOffice::GetPoster() as constructor parameter manually.
+			when yes, uses have no sense of Poster and messages could be delivered with locality considered
+		which brings performance gain to whole system through lowering HeadOffice's burden compared with NO.
+			when no, setting poster manually could increase flexibility of regional offices while inceasing
+		users' knowlege burden and user class constraints(constructor must take Poster as parameter).
+			based on considerations above, YES is the current solution.
+
+
+
+
+		
+
+
+
+
+
+

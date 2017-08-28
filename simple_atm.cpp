@@ -12,7 +12,7 @@ struct TransactionOver{};
 class ATMHardware final: public LocalOffice
 {
 	public:
-		ATMHardware( Poster poster) : LocalOffice( poster){
+		ATMHardware() : LocalOffice(){
 			std::cout << "atm hardware is initializing...\n";
 			bind<StartOnDeposit>([this]( StartOnDeposit const&) 
 							{ 
@@ -23,7 +23,7 @@ class ATMHardware final: public LocalOffice
 			bind<SuccessOnDeposit>([this]( SuccessOnDeposit const&)
 							{
 								std::cout << "success in deposition\n";	
-								this->m_poster.emplace<TransactionOver>();	
+								this->m_poster( make_message<TransactionOver>() );
 								std::cout << "after success in deposition\n";	
 							});	
 		} 
@@ -34,24 +34,26 @@ class ATMHardware final: public LocalOffice
 class Bank final : public AsyncOffice
 {
 	public:	
-		Bank( Poster poster) : AsyncOffice( poster){
+		Bank() : AsyncOffice(){
 			std::cout << "bank is initializing...\n";
-			bind<Credential>([this]( Credential const&) 
-				{ 
-					std::cout << "before credential got verified\n";
-					this->m_poster.emplace<SuccessOnDeposit>(); 
-					std::cout << "after credential got verified\n";
-				});
+			bind<Credential>( &Bank::authenticate, this); 
 			bind<TransactionOver>([this]( TransactionOver const&)
 				{
 					std::cout << "before transactio-over got verified\n";
-					this->m_poster.emplace<CmfClose>(); 
+					this->m_poster( make_message<CmfStop>() ); 
 					std::cout << "after transaction-over got verified\n";
 				}); 
 		}
-		~Bank() {
+		~Bank() {}
+
+	private:
+		void authenticate(Credential const&){
+			std::cout << "before credential got verified\n";
+			this->m_poster.emplace<SuccessOnDeposit>(); 
+			std::cout << "after credential got verified\n";
 		}
 };
+
 
 
 class SimpleATM final: public HeadOffice
@@ -59,8 +61,8 @@ class SimpleATM final: public HeadOffice
 	public:
 		SimpleATM() {
 			std::cout << "simple atm is initializing...\n";
-			bind( std::make_shared<ATMHardware>( GetPoster() ) );	
-			bind( std::make_shared<Bank>( GetPoster() ) );	
+			bindOffice( std::make_shared<ATMHardware>(  ) );//GetPoster()	
+			bindOffice( std::make_shared<Bank>(  ) );//GetPoster()	
 			std::cout << "simple atm got initialized...\n";
 		}
 		~SimpleATM(){};
@@ -71,7 +73,8 @@ int main(int argc, char* argv[])
 	SimpleATM atm;
 //	atm.GetPoster().emplace<StartOnDeposit>();
 	atm( make_message<StartOnDeposit>() );
-	atm.Open();
+//	atm( make_message<int>() ); //---> caught exception that not recipients bound to type int
+	atm.Run();
 	std::cout << "transaction is over\n";
 
 	return 0;
