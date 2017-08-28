@@ -27,7 +27,7 @@ namespace cmf
 					return typeid(MsgType);
 				}
 		
-				// support MsgType conversion
+				// explicitly support implicit MsgType conversion
 				operator MsgType const& () noexcept {
 					return m_raw_msg;
 				}
@@ -38,9 +38,9 @@ namespace cmf
 	}
 
 	template<class MsgType, class... Args>
-	std::shared_ptr<Message> make_message( Args&&... args)
+	comm::sp<Message> make_message( Args&&... args)
 	{
 		return std::make_shared<WrappedMessage<MsgType>>( std::forward<Args>(args)... );	
 	}
 
-} // end of comm
+} // end of cmf 

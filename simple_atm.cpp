@@ -57,12 +57,10 @@ class Bank final : public AsyncOffice
 class SimpleATM final: public HeadOffice
 {
 	public:
-		SimpleATM(){
+		SimpleATM() {
 			std::cout << "simple atm is initializing...\n";
 			bind( std::make_shared<ATMHardware>( GetPoster() ) );	
-			auto bank = std::make_shared<Bank>( GetPoster() );
-//			(*bank)(); // start the async office
-			bind( bank );	
+			bind( std::make_shared<Bank>( GetPoster() ) );	
 			std::cout << "simple atm got initialized...\n";
 		}
 		~SimpleATM(){};
@@ -71,9 +69,9 @@ class SimpleATM final: public HeadOffice
 int main(int argc, char* argv[])
 {
 	SimpleATM atm;
-	atm.GetPoster().emplace<StartOnDeposit>();
-//	atm( make_message<StartOnDeposit>() );
-	atm();
+//	atm.GetPoster().emplace<StartOnDeposit>();
+	atm( make_message<StartOnDeposit>() );
+	atm.Open();
 	std::cout << "transaction is over\n";
 
 	return 0;

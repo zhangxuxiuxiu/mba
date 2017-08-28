@@ -13,7 +13,7 @@ namespace cmf{
 	 * */
 	class LocalOffice: public RegionalOffice{
 		public:	
-			LocalOffice(Poster poster) : RegionalOffice(poster){}//, m_deliverer(&this->m_map_index2recipients){} 
+			LocalOffice(Poster poster) : RegionalOffice(poster){}
 			virtual ~LocalOffice(){}	
 
 			inline virtual void operator()(const comm::sp<Message>& msg ) override final{
@@ -29,14 +29,15 @@ namespace cmf{
 		public:	
 			ProxyOffice( Poster poster, int sleepMs ) : RegionalOffice(poster), 
 				m_is_open(true), m_sleep_ms(sleepMs){
+					// bind the closer to CmfClose message
 					bind<CmfClose>([this](CmfClose const&){this->close();});	
 				}
 			virtual ~ProxyOffice(){};
-			inline virtual void operator() (const comm::sp<Message>& msg) override final{
+			inline virtual void operator() (comm::sp<Message> const& msg) override final{
 				m_queue_messages.Push(msg);
 			}
 			// start dispatching
-			virtual void operator()() = 0;
+			virtual void Open() = 0;
 
 		protected:
 			inline void dispatch(){
@@ -68,7 +69,7 @@ namespace cmf{
 			AsyncOffice(Poster poster, int sleepMs = 100) : ProxyOffice(poster, sleepMs){}
 			virtual ~AsyncOffice(){ m_asyncer.get(); }	
 
-			virtual void operator()() override final{
+			virtual void Open() override final{
 				m_asyncer = std::async( std::launch::async, [this](){
 					this->dispatch();	
 				}); 
@@ -88,7 +89,7 @@ namespace cmf{
 			virtual ~HeadOffice(){}	
 	
 			inline Poster GetPoster() { return Poster( &this->m_queue_messages); }
-			inline virtual void operator()() override final{
+			inline virtual void Open() override final{
 				dispatch();	
 			}
 	};

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "poster.h"
 #include "recipient.h"
 
@@ -9,6 +11,7 @@ namespace cmf{
 	 *  a regional office which could process multiple message types
 	 *  by delivering each message to its corresponding recipient
 	 * */
+	class AsyncOffice; // forward declaration to use in RegionalOffice::bind
 	class RegionalOffice : public Recipient
 	{
 		public:
@@ -24,9 +27,6 @@ namespace cmf{
 			}
 			// bind recipient for a series of msg types
 			RegionalOffice& bind( comm::sp<Recipient> const& recipient  );
-			class AsyncOffice;
-			// bind asyncOffice for a series of msg types
-			RegionalOffice& bind( comm::sp<AsyncOffice> const& asyncOffice);
 			// deliver the msg to the final recipient
 			void doDeliver(const comm::sp<Message>& msg);
 
