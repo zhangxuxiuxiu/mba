@@ -1,8 +1,8 @@
 #pragma once
 
 #include "message.h"
-#include "comm/sync_queue.h"
-#include "comm/comm.h"
+#include "util/sync_queue.h"
+#include "util/util.h"
 
 
 namespace cmf 
@@ -11,7 +11,7 @@ namespace cmf
 	{
 		public:
 			//support implicit conversion
-			Poster( SyncQueue< sp<Message> >* p_queue = nullptr) : m_queue_messages_ptr( p_queue){}
+			Poster( SyncQueue< sptr<Message> >* p_queue = nullptr) : m_queue_messages_ptr( p_queue){}
 
 			Poster( Poster const&) = default;
 			Poster( Poster &&) = default;
@@ -25,7 +25,7 @@ namespace cmf
 				operator()( make_message<MsgType>( std::forward<Args>(args)... ) ); 
 			}
 
-			void operator()( sp<Message> const& msg ){
+			void operator()( sptr<Message> const& msg ){
 				if( m_queue_messages_ptr != nullptr) {
 					m_queue_messages_ptr->Push( msg );
 				} else {
@@ -33,8 +33,16 @@ namespace cmf
 				}
 			}
 
+			void operator()( sptr<Message> && msg ){
+				if( m_queue_messages_ptr != nullptr) {
+					m_queue_messages_ptr->Push( std::move(msg) );
+				} else {
+					throw std::logic_error(" messege queue in the Poster is null");  
+				}
+			}
+
 		private:
-			SyncQueue< sp<Message> >* m_queue_messages_ptr;
+			SyncQueue< sptr<Message> >* m_queue_messages_ptr;
 	};
 
-} // end of comm
+} // end of cmf 

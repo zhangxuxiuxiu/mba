@@ -28,9 +28,9 @@ namespace cmf{
 				return *this;
 			}
 			// bind office for a series of msg types
-			virtual RegionalOffice& bindOffice( sp<RegionalOffice> const& office);
+			virtual RegionalOffice& bindOffice( sptr<RegionalOffice> const& office);
 			// deliver the msg to the final recipient
-			void doDeliver(const sp<Message>& msg);
+			void doDeliver(const sptr<Message>& msg);
 
 		private:
 			// start dispatching
@@ -45,9 +45,9 @@ namespace cmf{
 			// all types which the whole Recipients here in this registry can handle
 			std::unordered_set<std::type_index>							m_set_messages;
 			// map each msg's type_index to its Recipients
-			std::unordered_multimap< std::type_index, sp< Recipient > >	m_map_index2recipients;
+			std::unordered_multimap< std::type_index, sptr< Recipient > >	m_map_index2recipients;
 			// all Recipients in this composable Recipient --> avoid duplicate recipients
-		//	std::unordered_set<sp< Recipient> >							m_set_recipients;
+		//	std::unordered_set<sptr< Recipient> >							m_set_recipients;
 	};
 }
 

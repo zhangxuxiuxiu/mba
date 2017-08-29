@@ -6,9 +6,9 @@ namespace cmf
 {
 
 	template< class _Tp >
-	using sp = std::shared_ptr< _Tp >;
+	using sptr = std::shared_ptr< _Tp >;
 	template< class _Tp >
-	using up = std::unique_ptr< _Tp >;
+	using uptr = std::unique_ptr< _Tp >;
 
 #if __cplusplus >= 201402L ||                                              \
     (defined __cpp_lib_make_unique && __cpp_lib_make_unique >= 201304L) || \
@@ -22,7 +22,7 @@ namespace cmf
 	auto make_unique( _Args&&... args)
 		-> typename std::enable_if< !std::is_array<_Tp>::value, std::unique_ptr< _Tp>>::type 
 	{
-		return std::unique_ptr<_Tp>( new _Tp( std::forward<_Args>(args)... ) );
+		return uptr<_Tp>( new _Tp( std::forward<_Args>(args)... ) );
 	}
 
 	// class array
@@ -31,7 +31,7 @@ namespace cmf
 		-> typename std::enable_if< std::is_array<_Tp>::value  && std::extent<_Tp>::value == 0, std::unique_ptr<_Tp> >::type
 	{
 		using Elem = typename std::remove_extent<_Tp>::type;
-		return std::unique_ptr<_Tp>( new Elem[size]() );
+		return uptr<_Tp>( new Elem[size]() );
 	}
 
 	// disable T[N]  with a known bound

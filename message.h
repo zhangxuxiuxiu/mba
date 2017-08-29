@@ -6,16 +6,17 @@
 
 #include <iostream>
 
-#include "comm/comm.h" 
-#include "comm/noncopyable.h"
+#include "util/util.h" 
+#include "util/demangle.h"
+#include "util/noncopyable.h"
 
 namespace cmf 
 {
-	using sec = std::chrono::seconds;
-	using ms = std::chrono::milliseconds;
-	using ps = std::chrono::microseconds;
-	using ns = std::chrono::nanoseconds;
-	using time_point = std::chrono::steady_clock::time_point;
+	using ns		= std::chrono::nanoseconds;
+	using ps		= std::chrono::microseconds;
+	using ms		= std::chrono::milliseconds;
+	using sec		= std::chrono::seconds;
+	using time_point= std::chrono::steady_clock::time_point;
 
 	inline time_point Now() { return std::chrono::steady_clock::now(); }
 
@@ -32,12 +33,12 @@ namespace cmf
 			inline time_point const& AriseTime () const { return m_arise_time; }
 			// deliver this message $delayMs later
 			template<class Duration>
-			inline sp<Message> AriseAfter(Duration const& duration){
+			inline sptr<Message> AriseAfter(Duration const& duration){
 				m_arise_time = Now() + duration;	
 				return shared_from_this();
 			} 
 			// deliver this message at $timeSinceEpochMs 
-			inline sp<Message> AriseAt(time_point const& ariseTime){
+			inline sptr<Message> AriseAt(time_point const& ariseTime){
 				m_arise_time = ariseTime;	
 				return shared_from_this();
 			} 
@@ -46,14 +47,14 @@ namespace cmf
 				return std::chrono::duration_cast<ms>(m_arise_time - Now());
 			}
 
-			friend bool operator< ( sp<Message> const& lhs, sp<Message> const& rhs);
+			friend bool operator< ( sptr<Message> const& lhs, sptr<Message> const& rhs);
 
 		private:
 			time_point	m_arise_time;
 	};
 
 	// make it comparable to use in priority_queue
-	inline bool operator< ( sp<Message> const& lhs, sp<Message> const& rhs){
+	inline bool operator< ( sptr<Message> const& lhs, sptr<Message> const& rhs){
 		return lhs->m_arise_time > rhs->m_arise_time;	// earlier message should stay at top of priority_queue 
 	}
 
@@ -85,11 +86,11 @@ namespace cmf
 		};
 
 		template<class MsgType>
-		std::string const WrappedMessage<MsgType>::s_type_info = typeid(MsgType).name();
+		std::string const WrappedMessage<MsgType>::s_type_info = demangle(typeid(MsgType));
 	}
 
 	template<class MsgType, class... Args>
-	sp<Message> make_message( Args&&... args){
+	sptr<Message> make_message( Args&&... args){
 		return std::make_shared<WrappedMessage<MsgType>>( std::forward<Args>(args)... );	
 	}
 

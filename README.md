@@ -55,10 +55,11 @@ future works:
 
 	4> provide a performance-improved and interface-friendly sync-queue/concurrent-queue;
 		to support timed message, a concurrent-priority-queue is needed.
-		
+		performance: refer to famous library
+		interface-friendly: bool push(T&&) && bool pop(T&);		
 
 	5> support thread pool in AsyncOffice; 
-	6> support future in ProxyOffices;
+	6> support future in ProxyOffices; (hard and important)
 
 thoughts:
 	1>	should regional office set its sub-office's poster's source as itself automatically 

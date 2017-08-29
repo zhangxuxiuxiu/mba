@@ -6,6 +6,9 @@ struct StartOnDeposit{};
 struct Credential{};
 struct SuccessOnDeposit{};
 struct TransactionOver{};
+namespace unbound{
+	struct UnboundMessage{};
+}
 
 class ATMHardware final: public LocalOffice
 {
@@ -38,7 +41,7 @@ class Bank final : public AsyncOffice
 			bind<TransactionOver>([this]( TransactionOver const&)
 				{
 					std::cout << "before transactio-over got verified\n";
-					auto msg = make_message<CmfStop>()->AriseAfter(sec(5));
+					auto msg = make_message<CmfStop>()->AriseAfter(sec(5)); // ns, ps, ms are also suppported
 					this->m_poster( msg ); 
 					std::cout << "after transaction-over got verified \n";
 				}); 
@@ -60,7 +63,7 @@ class SimpleATM final: public HeadOffice
 	public:
 		SimpleATM() {
 			std::cout << "simple atm is initializing...\n";
-			bindOffice( std::make_shared<ATMHardware>() );
+			bindOffice( std::make_shared<ATMHardware>() );  // bindOffice could also be used in subclasses of LocalOffice and AsyncOffice
 			bindOffice( std::make_shared<Bank>() );	
 			std::cout << "simple atm got initialized...\n";
 		}
@@ -73,7 +76,7 @@ int main(int argc, char* argv[])
 //	atm.GetPoster().emplace<StartOnDeposit>();
 	atm( make_message<StartOnDeposit>() );
 	atm( make_message<StartOnDeposit>()->AriseAfter(ms(3000)) );
-//	atm( make_message<int>() ); //---> caught exception that not recipients bound to type int
+//	atm( make_message<unbound::UnboundMessage>() ); //---> caught exception that not recipients bound to type int
 	atm.Run();
 	std::cout << "transaction is over\n";
 

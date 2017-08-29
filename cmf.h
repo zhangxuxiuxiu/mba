@@ -15,7 +15,7 @@ namespace cmf{
 			LocalOffice() : RegionalOffice(){}
 			virtual ~LocalOffice(){}	
 
-			inline virtual void operator()(const sp<Message>& msg ) override final{
+			inline virtual void operator()(const sptr<Message>& msg ) override final{
 				doDeliver(msg);
 			}	
 	};
@@ -33,22 +33,21 @@ namespace cmf{
 				}
 			virtual ~ProxyOffice(){};
 
-			inline virtual void operator() (sp<Message> const& msg) override final{
+			inline virtual void operator() (sptr<Message> const& msg) override final{
 				m_queue_messages.Push(msg);
 			}
 
 		protected:
 			inline void dispatch(){
-				sp<Message> current_msg;
+				sptr<Message> current_msg;
 				ms delay_ms(0);
 				while(m_is_open.load(std::memory_order_consume)){ // only sync the m_is_open in $close
-					current_msg = m_queue_messages.Take(); // should return anyway
-					if( current_msg ){
+					if( m_queue_messages.Pop(current_msg) ){
 						delay_ms = current_msg->AriseLaterMs();
 						if(delay_ms.count() <= 0){
 							doDeliver(current_msg);	
-							std::cout << "delayMs is=" << delay_ms.count() << '\n';
-						} else {
+					//		std::cout << "delayMs is=" << delay_ms.count() << '\n';
+						} else { // repush the message until its arise-time
 							(*this)(current_msg);	
 							std::this_thread::sleep_for(ms(std::min(m_sleep_ms, delay_ms)));	
 						} 
@@ -59,7 +58,7 @@ namespace cmf{
 			}
 
 			// for ProxyOffice bind, the should set parameter's poster
-			inline virtual RegionalOffice& bindOffice( sp<RegionalOffice> const& subOffice) override{
+			inline virtual RegionalOffice& bindOffice( sptr<RegionalOffice> const& subOffice) override{
 				RegionalOffice::bindOffice(subOffice);	
 				// setting this so that sub-office could post message to current office through m_poster
 				subOffice->m_poster = &m_queue_messages;
@@ -67,7 +66,7 @@ namespace cmf{
 			}
 
 		protected:
-			SyncQueue< sp<Message> >	m_queue_messages;
+			SyncQueue< sptr<Message> >	m_queue_messages;
 
 		private:
 			inline void close(){ m_is_open.store(false, std::memory_order_release);} // just to sync the $dispatch
