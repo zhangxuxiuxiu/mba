@@ -11,10 +11,10 @@
 namespace cmf 
 {
 
-	class Recipient : private comm::Noncopyable
+	class Recipient : private Noncopyable
 	{
 		public:
-			virtual void operator()(const comm::sp<Message>& msg ) = 0;
+			virtual void operator()(const sp<Message>& msg ) = 0;
 			virtual ~Recipient() {};
 
 	};
@@ -30,7 +30,7 @@ namespace cmf
 				}
 				~WrappedRecipient(){}
 		
-				virtual void operator()(const comm::sp<Message>& msg ) override final
+				virtual void operator()(const sp<Message>& msg ) override final
 				{
 					auto wrapped_msg = dynamic_cast<  WrappedMessage<MsgType>*  >( msg.get() );		
 					if( wrapped_msg != nullptr ){
@@ -46,7 +46,7 @@ namespace cmf
 	}
 
 	template<class MsgType, class... Args>
-	comm::sp<Recipient> make_recipient( Args&&... args)
+	sp<Recipient> make_recipient( Args&&... args)
 	{
 		return std::make_shared< WrappedRecipient<MsgType>>( std::forward<Args>(args)... );	
 	}

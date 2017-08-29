@@ -2,20 +2,61 @@
 
 #include <typeinfo>
 #include <string>
+#include <chrono>
+
+#include <iostream>
 
 #include "comm/comm.h" 
 #include "comm/noncopyable.h"
 
 namespace cmf 
 {
-	class Message : private comm::Noncopyable
+	using sec = std::chrono::seconds;
+	using ms = std::chrono::milliseconds;
+	using ps = std::chrono::microseconds;
+	using ns = std::chrono::nanoseconds;
+	using time_point = std::chrono::steady_clock::time_point;
+
+	inline time_point Now() { return std::chrono::steady_clock::now(); }
+
+	class Message : private Noncopyable, public std::enable_shared_from_this<Message>
 	{
 		public:
+			Message( time_point const& ariseTime = Now() ) 
+				: m_arise_time( ariseTime){}
 			virtual ~Message(){}
+
 			virtual std::type_info const& Type() const = 0;
 			virtual std::string const& Info() const = 0;
+
+			inline time_point const& AriseTime () const { return m_arise_time; }
+			// deliver this message $delayMs later
+			template<class Duration>
+			inline sp<Message> AriseAfter(Duration const& duration){
+				m_arise_time = Now() + duration;	
+				return shared_from_this();
+			} 
+			// deliver this message at $timeSinceEpochMs 
+			inline sp<Message> AriseAt(time_point const& ariseTime){
+				m_arise_time = ariseTime;	
+				return shared_from_this();
+			} 
+			// how long it will be delivered
+			inline ms AriseLaterMs() const{
+				return std::chrono::duration_cast<ms>(m_arise_time - Now());
+			}
+
+			friend bool operator< ( sp<Message> const& lhs, sp<Message> const& rhs);
+
+		private:
+			time_point	m_arise_time;
 	};
-	
+
+	// make it comparable to use in priority_queue
+	inline bool operator< ( sp<Message> const& lhs, sp<Message> const& rhs){
+		return lhs->m_arise_time > rhs->m_arise_time;	// earlier message should stay at top of priority_queue 
+	}
+
 	namespace{  // WrappedMessage should be invisible to outside
 		template< class MsgType > 
 		class WrappedMessage final: public Message
@@ -29,7 +70,7 @@ namespace cmf
 					return typeid(MsgType);
 				}
 				inline virtual std::string const& Info() const override final {
-					return s_info;
+					return s_type_info;
 				}
 		
 				// explicitly support implicit MsgType conversion
@@ -40,16 +81,15 @@ namespace cmf
 			private:
 				MsgType m_raw_msg;
 
-				static std::string const s_info;
+				static std::string const s_type_info;
 		};
 
 		template<class MsgType>
-		std::string const WrappedMessage<MsgType>::s_info = typeid(MsgType).name();
+		std::string const WrappedMessage<MsgType>::s_type_info = typeid(MsgType).name();
 	}
 
 	template<class MsgType, class... Args>
-	comm::sp<Message> make_message( Args&&... args)
-	{
+	sp<Message> make_message( Args&&... args){
 		return std::make_shared<WrappedMessage<MsgType>>( std::forward<Args>(args)... );	
 	}
 

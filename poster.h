@@ -11,7 +11,7 @@ namespace cmf
 	{
 		public:
 			//support implicit conversion
-			Poster( comm::SyncQueue< comm::sp<Message> >* p_queue = nullptr) : m_queue_messages_ptr( p_queue){}
+			Poster( SyncQueue< sp<Message> >* p_queue = nullptr) : m_queue_messages_ptr( p_queue){}
 
 			Poster( Poster const&) = default;
 			Poster( Poster &&) = default;
@@ -25,7 +25,7 @@ namespace cmf
 				operator()( make_message<MsgType>( std::forward<Args>(args)... ) ); 
 			}
 
-			void operator()( comm::sp<Message> const& msg ){
+			void operator()( sp<Message> const& msg ){
 				if( m_queue_messages_ptr != nullptr) {
 					m_queue_messages_ptr->Push( msg );
 				} else {
@@ -34,7 +34,7 @@ namespace cmf
 			}
 
 		private:
-			comm::SyncQueue< comm::sp<Message> >* m_queue_messages_ptr;
+			SyncQueue< sp<Message> >* m_queue_messages_ptr;
 	};
 
 } // end of comm

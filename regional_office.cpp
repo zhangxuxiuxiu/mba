@@ -4,7 +4,7 @@
 
 namespace cmf{
 	
-	RegionalOffice& RegionalOffice::bindOffice(comm::sp<RegionalOffice> const& office) 
+	RegionalOffice& RegionalOffice::bindOffice(sp<RegionalOffice> const& office) 
 	{
 		for( auto& ti : office->m_set_messages){
 			m_set_messages.emplace(ti);
@@ -16,7 +16,7 @@ namespace cmf{
 		return *this;
 	}
 
-	void RegionalOffice::doDeliver(const comm::sp<Message>& msg)
+	void RegionalOffice::doDeliver(const sp<Message>& msg)
 	{
 		auto range = m_map_index2recipients.equal_range(msg->Type());
 		if( range.first == range.second){ 

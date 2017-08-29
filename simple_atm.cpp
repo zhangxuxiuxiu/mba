@@ -1,7 +1,5 @@
 #include "cmf.h"
 
-#include <iostream>
-
 using namespace cmf;
 
 struct StartOnDeposit{};
@@ -22,7 +20,7 @@ class ATMHardware final: public LocalOffice
 							});
 			bind<SuccessOnDeposit>([this]( SuccessOnDeposit const&)
 							{
-								std::cout << "success in deposition\n";	
+								std::cout << "before success in deposition\n";	
 								this->m_poster( make_message<TransactionOver>() );
 								std::cout << "after success in deposition\n";	
 							});	
@@ -40,8 +38,9 @@ class Bank final : public AsyncOffice
 			bind<TransactionOver>([this]( TransactionOver const&)
 				{
 					std::cout << "before transactio-over got verified\n";
-					this->m_poster( make_message<CmfStop>() ); 
-					std::cout << "after transaction-over got verified\n";
+					auto msg = make_message<CmfStop>()->AriseAfter(sec(5));
+					this->m_poster( msg ); 
+					std::cout << "after transaction-over got verified \n";
 				}); 
 		}
 		~Bank() {}
@@ -61,8 +60,8 @@ class SimpleATM final: public HeadOffice
 	public:
 		SimpleATM() {
 			std::cout << "simple atm is initializing...\n";
-			bindOffice( std::make_shared<ATMHardware>(  ) );//GetPoster()	
-			bindOffice( std::make_shared<Bank>(  ) );//GetPoster()	
+			bindOffice( std::make_shared<ATMHardware>() );
+			bindOffice( std::make_shared<Bank>() );	
 			std::cout << "simple atm got initialized...\n";
 		}
 		~SimpleATM(){};
@@ -73,6 +72,7 @@ int main(int argc, char* argv[])
 	SimpleATM atm;
 //	atm.GetPoster().emplace<StartOnDeposit>();
 	atm( make_message<StartOnDeposit>() );
+	atm( make_message<StartOnDeposit>()->AriseAfter(ms(3000)) );
 //	atm( make_message<int>() ); //---> caught exception that not recipients bound to type int
 	atm.Run();
 	std::cout << "transaction is over\n";

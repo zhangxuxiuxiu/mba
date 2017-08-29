@@ -2,7 +2,7 @@
 
 #include <memory>
 
-namespace comm
+namespace cmf 
 {
 
 	template< class _Tp >
