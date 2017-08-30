@@ -21,7 +21,7 @@ namespace comm
 	{
 		std::vector< std::type_index> result;
 		detail::variadic_np< TypeIndexesHook, Types...>()( result);	
-		return result;
+		return std::move(result);
 	}
 
 } // end of comm

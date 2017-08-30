@@ -1,12 +1,12 @@
 #include "message.h"
-#include "comm/sync_queue.h"
+#include "util/sync_queue.h"
 
 #include <cassert>
 
 using namespace cmf;
 
 int main(){
-	SyncQueue<sp<Message>> q;
+	SyncQueue<sptr<Message>> q;
 	q.Push(make_message<int>(3));
 	q.Push(make_message<long>(4));
 
@@ -17,10 +17,9 @@ int main(){
 	q.Push(msg3);
 	assert(msg3 == msg4);	
 
-	auto msg = q.Take();
-	while(msg){
+	sptr<Message> msg;
+	while(q.Pop(msg)){
 		std::cout << msg->AriseTime().time_since_epoch().count() << '\n';	
-		msg = q.Take();
 	}
 
 	return 0;

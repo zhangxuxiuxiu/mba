@@ -18,18 +18,29 @@ namespace cmf
 				m_queue.push( std::move(ele) );  
 			}
 
-			// return front() or default Tp
-			bool Pop(Tp& item){
+			// return top() if not empty 
+	/*		bool Pop(Tp& item){
 				std::lock_guard<std::mutex> lg(m_mutex);
 				if( m_queue.empty() ){
 					return false;	
 				} else {
-					// copy front to res other than that refering to it by auto&  
-					// which may crrupt the memory
 					item = std::move(m_queue.top()); 
 					m_queue.pop();
 					return true;
 				}
+			}
+*/
+			// return if top() meets the requirement of &pred
+			bool Pop(Tp& item, std::function<bool(Tp const&)> const& pred =[](Tp const&){ return true;}){
+				std::lock_guard<std::mutex> lg(m_mutex);
+				if( m_queue.empty() || !pred(m_queue.top()) ){
+					return false;	
+				} else {
+					item = std::move(m_queue.top()); 
+					m_queue.pop();
+					return true;
+				}
+			
 			}
 
 		private:
@@ -37,5 +48,5 @@ namespace cmf
 			std::priority_queue< Tp >	m_queue;  
 	};
 
-}   // end of comm
+}   // end of cmf 
 

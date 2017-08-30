@@ -40,10 +40,9 @@ namespace cmf{
 		protected:
 			inline void dispatch(){
 				sptr<Message> current_msg;
-				ms delay_ms(0);
 				while(m_is_open.load(std::memory_order_consume)){ // only sync the m_is_open in $close
 					if( m_queue_messages.Pop(current_msg) ){
-						delay_ms = current_msg->AriseLaterMs();
+						ms delay_ms = current_msg->AriseLaterMs();
 						if(delay_ms.count() <= 0){
 							doDeliver(current_msg);	
 					//		std::cout << "delayMs is=" << delay_ms.count() << '\n';
@@ -51,9 +50,16 @@ namespace cmf{
 							(*this)(current_msg);	
 							std::this_thread::sleep_for(ms(std::min(m_sleep_ms, delay_ms)));	
 						} 
+					} 
+			/*
+					auto should_deliver = [](sptr<Message> const& msg){
+								return msg->AriseLaterMs().count() <= 0; }; 
+					if( m_queue_messages.Pop(current_msg, should_deliver ) ){
+							doDeliver(current_msg);	
 					} else { 
 						std::this_thread::sleep_for(m_sleep_ms);	
 					}
+			*/
 				}
 			}
 
