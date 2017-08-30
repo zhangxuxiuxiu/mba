@@ -2,7 +2,7 @@
 
 #include "message.h"
 #include "util/sync_queue.h"
-#include "util/util.h"
+#include "util/ptr.h"
 
 
 namespace cmf 

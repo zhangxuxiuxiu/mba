@@ -17,6 +17,7 @@
 #pragma once
 
 #include <string>
+#include <cxxabi.h>
 
 namespace cmf{
 
@@ -31,6 +32,29 @@ namespace cmf{
  *
  * This function may allocate memory (and therefore throw std::bad_alloc).
  */
-std::string demangle(const std::type_info& type);
+
+// support template value parameter except for std::type_info 
+template<class Type>
+inline std::string demangle(Type const&){
+	return demangle(typeid(Type));
+}
+
+// support template type
+template<class Type>
+inline std::string demangle(){ 
+	return demangle(typeid(Type)); 
+}
+
+template<>
+std::string demangle(const std::type_info& type){
+	  int status;
+	  size_t len = 0;
+	  // malloc() memory for the demangled type name
+	  char* demangled = abi::__cxa_demangle(type.name(), nullptr, &len, &status);
+	  if (status != 0) {
+	    return type.name();
+	  }
+	  return demangled;
+}
 
 }

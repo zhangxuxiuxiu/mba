@@ -41,7 +41,7 @@ class Bank final : public AsyncOffice
 			bind<TransactionOver>([this]( TransactionOver const&)
 				{
 					std::cout << "before transactio-over got verified\n";
-					auto msg = make_message<CmfStop>()->AriseAfter(sec(5)); // ns, ps, ms are also suppported
+					auto msg = make_message<CmfStop>()->AriseAfter(sec(3)); // ns, ps, ms are also suppported
 					this->m_poster( msg ); 
 					std::cout << "after transaction-over got verified \n";
 				}); 
@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
 	SimpleATM atm;
 //	atm.GetPoster().emplace<StartOnDeposit>();
 	atm( make_message<StartOnDeposit>() );
-	atm( make_message<StartOnDeposit>()->AriseAfter(ms(3000)) );
+	atm( make_message<StartOnDeposit>()->AriseAfter(ms(2000)) );
 //	atm( make_message<unbound::UnboundMessage>() ); //---> caught exception that not recipients bound to type int
 	atm.Run();
 	std::cout << "transaction is over\n";

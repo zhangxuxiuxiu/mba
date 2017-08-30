@@ -60,6 +60,8 @@ future works:
 
 	5> support thread pool in AsyncOffice; 
 	6> support future in ProxyOffices; (hard and important)
+	7> support state management in each office(some events can only be dealt once, some should 
+	be dealt after some pre-events and so on)
 
 thoughts:
 	1>	should regional office set its sub-office's poster's source as itself automatically 
