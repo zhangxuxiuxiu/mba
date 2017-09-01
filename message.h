@@ -94,4 +94,13 @@ namespace cmf
 		return std::make_shared<WrappedMessage<MsgType>>( std::forward<Args>(args)... );	
 	}
 
+	class FunctionMessage final{
+		public:	
+			FunctionMessage(std::function<void()> functor) : m_functor(std::move(functor)){}
+			void operator()()const{ m_functor(); }
+
+		private:
+			std::function<void()>	m_functor;	
+	};	
+
 } // end of cmf 

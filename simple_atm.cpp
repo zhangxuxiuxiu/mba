@@ -41,8 +41,7 @@ class Bank final : public AsyncOffice
 			bind<TransactionOver>([this]( TransactionOver const&)
 				{
 					std::cout << "before transactio-over got verified\n";
-					auto msg = make_message<CmfStop>()->AriseAfter(sec(3)); // ns, ps, ms are also suppported
-					this->m_poster( msg ); 
+					this->m_poster( make_message<CmfStop>()->AriseAfter(sec(3)) );// ns, ps, ms are also suppported 
 					std::cout << "after transaction-over got verified \n";
 				}); 
 		}

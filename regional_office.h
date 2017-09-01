@@ -45,7 +45,7 @@ namespace cmf{
 			// all types which the whole Recipients here in this registry can handle
 			std::unordered_set<std::type_index>							m_set_messages;
 			// map each msg's type_index to its Recipients
-			std::unordered_multimap< std::type_index, sptr< Recipient > >	m_map_index2recipients;
+			std::unordered_multimap< std::type_index, sptr<Recipient> >	m_map_index2recipients;
 			// all Recipients in this composable Recipient --> avoid duplicate recipients
 		//	std::unordered_set<sptr< Recipient> >							m_set_recipients;
 	};
