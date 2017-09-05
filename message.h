@@ -4,8 +4,6 @@
 #include <string>
 #include <chrono>
 
-#include <iostream>
-
 #include "util/ptr.h" 
 #include "util/demangle.h"
 #include "util/noncopyable.h"
@@ -90,9 +88,14 @@ namespace cmf
 	}
 
 	template<class MsgType, class... Args>
-	sptr<Message> make_message( Args&&... args){
+	inline sptr<Message> make_message( Args&&... args){
 		return std::make_shared<WrappedMessage<MsgType>>( std::forward<Args>(args)... );	
 	}
+
+	//if a recipient is defined for a specifi message, 
+	//it must be bind through bind<MsgType>() without parameters;
+	template<class MessageType>	
+	struct IsRecipientDefined : public std::false_type {};
 
 	class FunctionMessage final{
 		public:	
@@ -102,5 +105,17 @@ namespace cmf
 		private:
 			std::function<void()>	m_functor;	
 	};	
+
+	struct FunctionMessageRecipient{
+		inline void operator()(FunctionMessage const& msg){
+			msg();	
+		}	
+	};
+
+	template<>
+	struct IsRecipientDefined<FunctionMessage> : public std::true_type{
+		using Type = FunctionMessageRecipient;	
+	};
+
 
 } // end of cmf 

@@ -20,11 +20,23 @@ namespace cmf{
 
 		protected:
 			// bind Recipient for a specific msg type
-			template< class MsgType, class... Args >
-			inline RegionalOffice& bind( Args&&... args)
+			template< class MsgType, class Func, class... Args >
+			inline auto bind( Func&& func, Args&&... args) 
+			-> typename std::enable_if<not IsRecipientDefined<MsgType>::value,RegionalOffice&>::type
 			{
 				m_set_messages.emplace(typeid(MsgType));
-				m_map_index2recipients.emplace( typeid(MsgType), make_recipient<MsgType>( std::forward<Args>(args)... )); 
+				m_map_index2recipients.emplace( typeid(MsgType), 
+						make_recipient<MsgType>( std::forward<Func>(func), std::forward<Args>(args)... )); 
+				return *this;
+			}
+			// easy-use interface for binding system-defined message
+			template< class MsgType, class RecipientType = typename IsRecipientDefined<MsgType>::Type >
+			inline auto bind() 
+			-> typename std::enable_if<IsRecipientDefined<MsgType>::value,RegionalOffice&>::type
+			{
+				m_set_messages.emplace(typeid(MsgType));
+				m_map_index2recipients.emplace( typeid(MsgType), 
+						make_recipient<MsgType>( RecipientType() )); 
 				return *this;
 			}
 			// bind office for a series of msg types
