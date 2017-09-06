@@ -1,7 +1,8 @@
 #pragma once
 
 #include "message.h"
-#include "util/sync_queue.h"
+//#include "util/sync_queue.h"
+#include "util/pcq.h"
 #include "util/ptr.h"
 
 
@@ -11,7 +12,7 @@ namespace cmf
 	{
 		public:
 			//support implicit conversion
-			Poster( SyncQueue< sptr<Message> >* p_queue = nullptr) : m_queue_messages_ptr( p_queue){}
+			Poster( utl::pcq< sptr<Message> >* p_queue = nullptr) : m_queue_messages_ptr( p_queue){}
 
 			Poster( Poster const&) = default;
 			Poster( Poster &&) = default;
@@ -42,7 +43,8 @@ namespace cmf
 			}
 
 		private:
-			SyncQueue< sptr<Message> >* m_queue_messages_ptr;
+		//	SyncQueue< sptr<Message> >* m_queue_messages_ptr;
+			utl::pcq< sptr<Message> >* m_queue_messages_ptr;
 	};
 
 } // end of cmf 

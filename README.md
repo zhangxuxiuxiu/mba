@@ -53,13 +53,13 @@ future works:
 	[### seems 2>&3> are unnecessary b' current solution will throw exception if a 
 	message is not bound with any recipient ###]
 
-	4> provide a performance-improved and interface-friendly sync-queue/concurrent-queue;
+	4> support future in HeadOffice&AsyncOffice; (hard and important) ---> DONE
+	5> provide a performance-improved and interface-friendly sync-queue/concurrent-queue;
 		to support timed message, a concurrent-priority-queue is needed.
-		performance: refer to famous library
-		interface-friendly: bool push(T&&) && bool pop(T&);		
+		interface-friendly: bool push(T&&) && bool pop(T&); -->done		
+		performance: refer to famous library( or using multiple pcqs(unbounded) to mimic SpNcQ)
 
-	5> support thread pool in AsyncOffice; 
-	6> support future in ProxyOffices; (hard and important)
+	6> support thread pool in AsyncOffice; 
 	7> support state management in each office(some events can only be dealt once, some should 
 	be dealt after some pre-events and so on)
 

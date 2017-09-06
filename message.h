@@ -3,6 +3,7 @@
 #include <typeinfo>
 #include <string>
 #include <chrono>
+#include <functional>
 
 #include "util/ptr.h" 
 #include "util/demangle.h"

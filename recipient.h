@@ -24,9 +24,9 @@ namespace cmf
 		class WrappedRecipient final : public Recipient
 		{
 			public:
-				template< class... Args >
-				WrappedRecipient( Args&&... args) : Recipient(), 
-					m_functor( std::bind(std::forward<Args>(args)..., std::placeholders::_1) ) {}
+				template< class F>
+				WrappedRecipient( F&& f): Recipient(), 
+					m_functor( std::forward<F>(f) ) {}
 				~WrappedRecipient(){}
 		
 				virtual void operator()(const sptr<Message>& msg ) override final

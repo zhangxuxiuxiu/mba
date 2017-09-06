@@ -1,5 +1,7 @@
 #include "cmf.h"
 
+#include <iostream>
+
 using namespace cmf;
 
 struct StartOnDeposit{};
@@ -15,13 +17,15 @@ class ATMHardware final: public LocalOffice
 	public:
 		ATMHardware() : LocalOffice(){
 			std::cout << "atm hardware is initializing...\n";
-			bind<StartOnDeposit>([this]( StartOnDeposit const&) 
+		//	bind<StartOnDeposit>([this]( StartOnDeposit const&) 
+			bind([this]( StartOnDeposit const&) 
 							{ 
 								std::cout << "start to depoist\n";
 								this->m_poster.emplace<Credential>(); 
 								std::cout << "finish to depoist\n";
 							});
-			bind<SuccessOnDeposit>([this]( SuccessOnDeposit const&)
+		//	bind<SuccessOnDeposit>([this]( SuccessOnDeposit const&)
+			bind([this]( SuccessOnDeposit const&)
 							{
 								std::cout << "before success in deposition\n";	
 								this->m_poster( make_message<TransactionOver>() );
@@ -32,13 +36,14 @@ class ATMHardware final: public LocalOffice
 };
 
 
-class Bank final : public AsyncOffice
+class Bank final : public AsyncNOffice
 {
 	public:	
-		Bank() : AsyncOffice(){
+		Bank() : AsyncNOffice(3){
 			std::cout << "bank is initializing...\n";
-			bind<Credential>( &Bank::authenticate, this); 
-			bind<TransactionOver>([this]( TransactionOver const&)
+			bind<Credential>( std::bind(&Bank::authenticate, this, std::placeholders::_1) ); 
+			bind([this]( TransactionOver const&)
+	//		bind<TransactionOver>([this]( TransactionOver const&)
 				{
 					std::cout << "before transactio-over got verified\n";
 					this->m_poster( make_message<CmfStop>()->AriseAfter(sec(3)) );// ns, ps, ms are also suppported 
