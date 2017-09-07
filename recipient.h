@@ -8,6 +8,7 @@
 
 #include "message.h"
 #include "util/demangle.h"
+#include "util/traits.h"
 
 namespace cmf 
 {
@@ -45,11 +46,15 @@ namespace cmf
 		};
 	}
 
-	template<class MsgType, class... Args>
-	sptr<Recipient> make_recipient( Args&&... args)
+	// for lambda, std::function, operator() defined Class or std::bind expression, MsgType can be deduced 
+	template<class Func, class MsgType = typename std::decay<typename utl::function_traits<Func>::template args<0>::type>::type >
+	inline sptr<Recipient > make_recipient( Func&& func)
 	{
-		return std::make_shared< WrappedRecipient<MsgType>>( std::forward<Args>(args)... );	
+		return std::make_shared< WrappedRecipient<MsgType>>( std::forward<Func>(func) );	
 	}
+
+	// Func in make_recipient could be constructed through std::bind using _1;
+	using std::placeholders::_1;
 
 } // end of comm
 

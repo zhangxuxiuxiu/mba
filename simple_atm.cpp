@@ -17,22 +17,22 @@ class ATMHardware final: public LocalOffice
 	public:
 		ATMHardware() : LocalOffice(){
 			std::cout << "atm hardware is initializing...\n";
-		//	bind<StartOnDeposit>([this]( StartOnDeposit const&) 
 			bind([this]( StartOnDeposit const&) 
 							{ 
 								std::cout << "start to depoist\n";
 								this->m_poster.emplace<Credential>(); 
 								std::cout << "finish to depoist\n";
 							});
-		//	bind<SuccessOnDeposit>([this]( SuccessOnDeposit const&)
-			bind([this]( SuccessOnDeposit const&)
-							{
-								std::cout << "before success in deposition\n";	
-								this->m_poster( make_message<TransactionOver>() );
-								std::cout << "after success in deposition\n";	
-							});	
+			bind( &ATMHardware::onSuccess, this, _1);
 		} 
 		~ATMHardware(){}
+
+	private:
+		void onSuccess(SuccessOnDeposit const&){
+			std::cout << "before success in deposition\n";	
+			this->m_poster( make_message<TransactionOver>() );
+			std::cout << "after success in deposition\n";	
+		}
 };
 
 
@@ -41,9 +41,8 @@ class Bank final : public AsyncNOffice
 	public:	
 		Bank() : AsyncNOffice(3){
 			std::cout << "bank is initializing...\n";
-			bind<Credential>( std::bind(&Bank::authenticate, this, std::placeholders::_1) ); 
+			bind( std::bind(&Bank::authenticate, this, _1) ); 
 			bind([this]( TransactionOver const&)
-	//		bind<TransactionOver>([this]( TransactionOver const&)
 				{
 					std::cout << "before transactio-over got verified\n";
 					this->m_poster( make_message<CmfStop>()->AriseAfter(sec(3)) );// ns, ps, ms are also suppported 
