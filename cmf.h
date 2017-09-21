@@ -96,7 +96,6 @@ namespace cmf{
 			}
 			~AsyncNOffice(){
 				std::for_each(m_asyncers.begin(),m_asyncers.end(),[](std::future<void>& fut){ fut.get(); });	
-//				std::cout << m_asyncers.size() << " asyncers have been joined\n";
 			}
 	
 		private:

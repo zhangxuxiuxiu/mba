@@ -1,10 +1,9 @@
-### this framework is referred from the atm example of << c++ concurrency in action>>
-### with a lot of design decisions changed, like optimizing the time complexity O(N) 
-### of the dispatchering messages to O(1), RegionalOffice could support a cleaner
-### way to dispatch than the dispatcher in atm.
+ this framework is referred from the atm example of << c++ concurrency in action>>
+ with a lot of design decisions changed, like optimizing the time complexity O(N) 
+ of the dispatchering messages to O(1), RegionalOffice could support a cleaner
+ way to dispatch than the dispatcher in atm.
 
-###########################  cmf  ############################# 
-				concurrent message flow architecture
+##concurrent message flow architecture(cmf)
 
 	this project aims to construct a loosely coupled architecture in which 
 different components communicate with each other through messages via 

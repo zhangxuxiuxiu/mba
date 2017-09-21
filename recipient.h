@@ -34,7 +34,8 @@ namespace cmf
 				{
 					auto wrapped_msg_ptr = dynamic_cast<  WrappedMessage<MsgType>*  >( msg.get() );		
 					if( wrapped_msg_ptr != nullptr ){
-						m_functor( static_cast<MsgType const&>(*wrapped_msg_ptr) ); 
+					//	m_functor( static_cast<MsgType const&>(*wrapped_msg_ptr) ); 
+						m_functor( wrapped_msg_ptr->operator MsgType const&() ); 
 					} else {
 						throw std::invalid_argument( std::string("wrong Recipient with type=") + demangle<MsgType>()
 								+ " is mapped to message type=" + msg->Info() );

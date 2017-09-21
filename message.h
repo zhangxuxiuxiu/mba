@@ -73,7 +73,7 @@ namespace cmf
 					return s_type_info;
 				}
 		
-				// explicitly support implicit MsgType conversion
+				// explicitly support MsgType conversion
 				operator MsgType const& () noexcept {
 					return m_raw_msg;
 				}
