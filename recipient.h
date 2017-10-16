@@ -7,16 +7,16 @@
 #include <string>
 
 #include "message.h"
-#include "util/demangle.h"
-#include "util/traits.h"
+#include "demangle.h"
+#include "traits.h"
 
 namespace cmf 
 {
 
-	class Recipient : private Noncopyable
+	class Recipient : private utl::Noncopyable
 	{
 		public:
-			virtual void operator()(const sptr<Message>& msg ) = 0;
+			virtual void operator()(const utl::sptr<Message>& msg ) = 0;
 			virtual ~Recipient() {};
 	};
 	
@@ -30,14 +30,14 @@ namespace cmf
 					m_functor( std::forward<F>(f) ) {}
 				~WrappedRecipient(){}
 		
-				virtual void operator()(const sptr<Message>& msg ) override final
+				virtual void operator()(const utl::sptr<Message>& msg ) override final
 				{
 					auto wrapped_msg_ptr = dynamic_cast<  WrappedMessage<MsgType>*  >( msg.get() );		
 					if( wrapped_msg_ptr != nullptr ){
 					//	m_functor( static_cast<MsgType const&>(*wrapped_msg_ptr) ); 
 						m_functor( wrapped_msg_ptr->operator MsgType const&() ); 
 					} else {
-						throw std::invalid_argument( std::string("wrong Recipient with type=") + demangle<MsgType>()
+						throw std::invalid_argument( std::string("wrong Recipient with type=") + utl::demangle<MsgType>()
 								+ " is mapped to message type=" + msg->Info() );
 					}
 				}
@@ -49,7 +49,7 @@ namespace cmf
 
 	// for lambda, std::function, operator() defined Class or std::bind expression, MsgType can be deduced 
 	template<class Func, class MsgType = typename std::decay<typename utl::function_traits<Func>::template args<0>::type>::type >
-	inline sptr<Recipient > make_recipient( Func&& func)
+	inline utl::sptr<Recipient > make_recipient( Func&& func)
 	{
 		return std::make_shared< WrappedRecipient<MsgType>>( std::forward<Func>(func) );	
 	}

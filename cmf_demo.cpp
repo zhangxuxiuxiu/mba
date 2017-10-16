@@ -24,6 +24,8 @@ class ATMHardware final: public LocalOffice
 								std::cout << "finish to depoist\n";
 							});
 			bind( &ATMHardware::onSuccess, this, _1);
+			bind([](int const& i){ std::cout << "first order ######### \n"; });
+			bind([](long const& l){ std::cout << "second order ######### \n"; });
 		} 
 		~ATMHardware(){}
 
@@ -46,6 +48,7 @@ class Bank final : public AsyncNOffice
 				{
 					std::cout << "before transactio-over got verified\n";
 					this->m_poster( make_message<CmfStop>()->AriseAfter(sec(3)) );// ns, ps, ms are also suppported 
+					this->m_poster( make_message( ordering(3, 5l) ) );// ns, ps, ms are also suppported 
 					std::cout << "after transaction-over got verified \n";
 				}); 
 		}
@@ -59,8 +62,6 @@ class Bank final : public AsyncNOffice
 		}
 };
 
-
-
 class SimpleATM final: public HeadOffice
 {
 	public:
@@ -68,6 +69,8 @@ class SimpleATM final: public HeadOffice
 			std::cout << "simple atm is initializing...\n";
 			bindOffice( std::make_shared<ATMHardware>() );  // bindOffice could also be used in subclasses of LocalOffice and AsyncOffice
 			bindOffice( std::make_shared<Bank>() );	
+			// support for ordered messages
+			bind<OrderedMessage>();
 			std::cout << "simple atm got initialized...\n";
 		}
 		~SimpleATM(){};

@@ -4,7 +4,7 @@
 
 namespace cmf{
 	
-	RegionalOffice& RegionalOffice::bindOffice(sptr<RegionalOffice> const& office) 
+	RegionalOffice& RegionalOffice::bindOffice(utl::sptr<RegionalOffice> const& office) 
 	{
 		for( auto& ti : office->m_set_messages){
 			m_set_messages.emplace(ti);
@@ -16,7 +16,7 @@ namespace cmf{
 		return *this;
 	}
 
-	void RegionalOffice::doDeliver(const sptr<Message>& msg)
+	void RegionalOffice::doDeliver(const utl::sptr<Message>& msg)
 	{
 		auto range = m_map_index2recipients.equal_range(msg->Type());
 		if( range.first == range.second){ 
@@ -29,6 +29,16 @@ namespace cmf{
 		// deliver the message to the corresponding recipients 
 		for(auto it = range.first; it != range.second ; ++it ){
 			(*it->second)(msg);
+		}
+	}
+
+	void RegionalOffice::orderedExecute(OrderedMessage const& msg){
+		// drop const 
+		auto msgs = const_cast<std::queue<utl::sptr<Message>>&>(msg.MessageQueue());
+		while(not msgs.empty()){
+			// TODO if not all message can be dealt with locally, throw exceptions
+			doDeliver(msgs.front());	
+			msgs.pop();
 		}
 	}
 

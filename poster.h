@@ -3,7 +3,7 @@
 #include "message.h"
 //#include "util/sync_queue.h"
 #include "util/pcq.h"
-#include "util/ptr.h"
+#include "ptr.h"
 
 
 namespace cmf 
@@ -12,7 +12,7 @@ namespace cmf
 	{
 		public:
 			//support implicit conversion
-			Poster( utl::pcq< sptr<Message> >* p_queue = nullptr) : m_queue_messages_ptr( p_queue){}
+			Poster( utl::pcq< utl::sptr<Message> >* p_queue = nullptr) : m_queue_messages_ptr( p_queue){}
 
 			Poster( Poster const&) = default;
 			Poster( Poster &&) = default;
@@ -26,7 +26,7 @@ namespace cmf
 				operator()( make_message<MsgType>( std::forward<Args>(args)... ) ); 
 			}
 
-			void operator()( sptr<Message> const& msg ){
+			void operator()( utl::sptr<Message> const& msg ){
 				if( m_queue_messages_ptr != nullptr) {
 					m_queue_messages_ptr->Push( msg );
 				} else {
@@ -34,7 +34,7 @@ namespace cmf
 				}
 			}
 
-			void operator()( sptr<Message> && msg ){
+			void operator()( utl::sptr<Message> && msg ){
 				if( m_queue_messages_ptr != nullptr) {
 					m_queue_messages_ptr->Push( std::move(msg) );
 				} else {
@@ -43,8 +43,8 @@ namespace cmf
 			}
 
 		private:
-		//	SyncQueue< sptr<Message> >* m_queue_messages_ptr;
-			utl::pcq< sptr<Message> >* m_queue_messages_ptr;
+		//	SyncQueue< utl::sptr<Message> >* m_queue_messages_ptr;
+			utl::pcq< utl::sptr<Message> >* m_queue_messages_ptr;
 	};
 
 } // end of cmf 

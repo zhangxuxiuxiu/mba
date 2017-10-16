@@ -17,7 +17,7 @@ namespace cmf{
 			LocalOffice() : RegionalOffice(){}
 			virtual ~LocalOffice(){}	
 
-			inline virtual void operator()(const sptr<Message>& msg ) override final{
+			inline virtual void operator()(const utl::sptr<Message>& msg ) override final{
 				doDeliver(msg);
 			}	
 	};
@@ -35,13 +35,13 @@ namespace cmf{
 				}
 			virtual ~ProxyOffice(){};
 
-			inline virtual void operator() (sptr<Message> const& msg) override final{
+			inline virtual void operator() (utl::sptr<Message> const& msg) override final{
 				m_queue_messages.Push(msg);
 			}
 
 		protected:
-			inline void dispatch(utl::pcq<sptr<Message>>& msg_queue){
-				sptr<Message> current_msg;
+			inline void dispatch(utl::pcq<utl::sptr<Message>>& msg_queue){
+				utl::sptr<Message> current_msg;
 				while(m_is_open.load(std::memory_order_consume)){ // only sync the m_is_open in $close
 					if( msg_queue.Pop(current_msg) ){
 						ms delay_ms = current_msg->AriseLaterMs();
@@ -53,7 +53,7 @@ namespace cmf{
 						} 
 					} 
 			/*
-					auto should_deliver = [](sptr<Message> const& msg){
+					auto should_deliver = [](utl::sptr<Message> const& msg){
 								return msg->AriseLaterMs().count() <= 0; }; 
 					if( m_queue_messages.Pop(current_msg, should_deliver ) ){
 							doDeliver(current_msg);	
@@ -65,7 +65,7 @@ namespace cmf{
 			}
 
 			// for ProxyOffice bind, the should set parameter's poster
-			inline virtual RegionalOffice& bindOffice( sptr<RegionalOffice> const& subOffice) override{
+			inline virtual RegionalOffice& bindOffice( utl::sptr<RegionalOffice> const& subOffice) override{
 				RegionalOffice::bindOffice(subOffice);	
 				// setting this so that sub-office could post message to current office through m_poster
 				subOffice->m_poster = &m_queue_messages;
@@ -73,8 +73,8 @@ namespace cmf{
 			}
 
 		protected:
-	//		SyncQueue< sptr<Message> >	m_queue_messages;
-			utl::pcq< sptr<Message> >	m_queue_messages;
+	//		SyncQueue< utl::sptr<Message> >	m_queue_messages;
+			utl::pcq< utl::sptr<Message> >	m_queue_messages;
 			std::atomic<bool>			m_is_open;
 			const ms					m_sleep_ms;
 
@@ -108,7 +108,7 @@ namespace cmf{
 					m_asyncers.push_back( std::async( std::launch::async, 
 					[this](){ 
 						size_t turn = 0, queue_size = this->m_queues.size();	
-						sptr<Message> current_msg;
+						utl::sptr<Message> current_msg;
 						while( this->m_is_open.load(std::memory_order_consume) ){
 							if(this->m_queue_messages.Pop(current_msg) ){
 								this->m_queues[turn++].Push(current_msg);	
@@ -129,7 +129,7 @@ namespace cmf{
 
 		private:
 			size_t									m_parallels;
-			std::vector<utl::pcq<sptr<Message>>>	m_queues;
+			std::vector<utl::pcq<utl::sptr<Message>>>	m_queues;
 			std::vector<std::future<void>>			m_asyncers;
 	};
 /*
